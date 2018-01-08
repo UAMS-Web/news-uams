@@ -1,0 +1,45 @@
+/*!
+Theme Name: Snoqualmie Falls
+Theme URI: uams.edu
+Description: UAMS Theme for College of Medicine
+Author: UAMS Web Team
+Author URI: http://uams.edu
+Template: uams-2016
+Version: 1.0
+ */
+
+ /* Site Overrides */
+#site-title {
+	max-width: 50%;
+}
+#site-title h1 {
+	font-size: 28px;
+}
+
+#site-title h1 a.long-title {
+	font-size: 24px;
+}
+.com-site-title {
+	font-size: 20px;
+	line-height: 0;
+	color: #404040;
+}
+@media only screen and (max-width: 991px) and (min-width: 769px) {
+	#site-title {
+	    max-width: 55%;
+	}
+}
+@media only screen and (max-width: 768px) {
+	#site-title {
+	    max-width: 90%;
+	}
+	#site-title h1 {
+		font-size: 20px;
+	}
+	#site-title h1 a.long-title {
+		font-size: 24px;
+	}
+	.com-site-title {
+		font-size: 18px;
+	}
+}
