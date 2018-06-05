@@ -19,10 +19,41 @@ Version: 1.0
 #site-title h1 a.long-title {
 	font-size: 24px;
 }
-.com-site-title {
-	font-size: 20px;
-	line-height: 0;
-	color: #404040;
+.card .card-content {
+	padding: 0 20px 20px;
+}
+.cards .card.xs .card-content h3 {
+	font-size: 24px;
+	margin-top: 16px;
+}
+.card.xs .card-content p {
+	font-size: 16px;
+}
+.card .card-content > a.more {
+	background: gray;
+	border: 0;
+	color: white;
+	padding: 10px;
+	width: 100%;
+}
+.primary-category {
+	top: 10px;
+	position: relative;
+	font-size: 16px;
+	font-weight: 600;
+}
+.primary-category a {
+	color: #9d2235;
+	border-bottom: none;
+}
+.primary-category a:hover,
+.primary-category a:focus {
+	border-bottom-style: dotted;
+}
+@media (max-width: 1200px) {
+	.featured-grid .card.med {
+	  flex: 39em; /* Full Width */
+	}
 }
 @media only screen and (max-width: 991px) and (min-width: 769px) {
 	#site-title {
@@ -39,7 +70,8 @@ Version: 1.0
 	#site-title h1 a.long-title {
 		font-size: 24px;
 	}
-	.com-site-title {
-		font-size: 18px;
-	}
+	/* News Cards */
+	.card .card-content p {
+		font-size: 16px;
+	  }
 }
