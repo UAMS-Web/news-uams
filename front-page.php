@@ -41,7 +41,9 @@
                   <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
                   <?php the_excerpt(); ?>
+                  
                 </div>
+                <div class="card-action"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
               </div>
             </article>
 
@@ -77,6 +79,7 @@
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
                   <?php the_excerpt(); ?>
                  </div>
+                 <div class="card-action"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
               </div>
             </article>
 
@@ -118,6 +121,7 @@
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
                   <?php the_excerpt(); ?>
                 </div>
+                <div class="card-footer"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
               </div>
             </article>
 
@@ -146,6 +150,7 @@
                     <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
                     <?php the_excerpt(); ?>
                   </div>
+                  <div class="card-footer"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
                 </div>
               </article>
 
