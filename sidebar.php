@@ -2,9 +2,10 @@
 
   <div class="col-md-4 uams-sidebar">
     <?php uams_sidebar_menu(); ?>
-    <?php // Added by TM
+		<?php // Added by TM
+		$pdf = false;
 		$pdf = get_field('news_release_pdf_url', get_the_ID());
-		if($pdf) { ?>
+		if($pdf && is_single()) { ?>
 			<div class="align-center widget"><a class="uams-btn btn-red btn-lg btn-pdf" target="_self" title="View News Release" href="<?php echo $pdf; ?>">View News Release</a></div>
 	<?php } ?>
 	<?php // Add News Contacts ?>

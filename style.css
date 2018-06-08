@@ -7,34 +7,29 @@ Author URI: http://uams.edu
 Template: uams-2016
 Version: 1.0
  */
-
- /* Site Overrides */
-#site-title {
-	max-width: 50%;
-}
-#site-title h1 {
-	font-size: 28px;
-}
-
-#site-title h1 a.long-title {
-	font-size: 24px;
-}
-.card .card-content {
+ 
+/* Site Overrides */
+ .cards .card .card-content {
 	padding: 0 20px 20px;
 }
 .cards .card.xs .card-content h3 {
 	font-size: 24px;
+}
+.cards .card .card-content h3 {
 	margin-top: 16px;
 }
-.card.xs .card-content p {
+.cards .card.xs .card-content p {
 	font-size: 16px;
 }
-.card .card-content > a.more {
+.cards .card .card-content > a.more {
 	background: gray;
 	border: 0;
 	color: white;
 	padding: 10px;
 	width: 100%;
+}
+.cards .card .card-image img {
+	width: 100%
 }
 .primary-category {
 	top: 10px;
@@ -49,6 +44,10 @@ Version: 1.0
 .primary-category a:hover,
 .primary-category a:focus {
 	border-bottom-style: dotted;
+}
+#more-stories col-md-4.cards {
+	padding-left: 0;
+	padding-right: 0;
 }
 @media (max-width: 1200px) {
 	.featured-grid .card.med {
