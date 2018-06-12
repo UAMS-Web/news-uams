@@ -33,7 +33,13 @@
               <?php 
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'large' ); ?>
+                <?php 
+                if ( $i == 1 ) {
+                  the_post_thumbnail( 'news-half' ); 
+                } else {
+                  the_post_thumbnail( 'news-third' ); 
+                }
+                ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
@@ -70,7 +76,7 @@
             <?php 
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'large' ); ?>
+                <?php the_post_thumbnail( 'news-half' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
@@ -112,7 +118,7 @@
             <?php 
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'medium' ); ?>
+                <?php the_post_thumbnail( 'news-third' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
@@ -141,7 +147,7 @@
               <?php 
                if ( has_post_thumbnail() ) : ?>
                 <div class="card-image">
-                  <?php the_post_thumbnail( 'medium' ); ?>
+                  <?php the_post_thumbnail( 'news-third' ); ?>
                 </div>
               <?php endif; ?>
                 <div class="card-stack">
