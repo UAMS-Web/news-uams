@@ -7,9 +7,12 @@ Author URI: http://uams.edu
 Template: uams-2016
 Version: 1.0
  */
- 
+
 /* Site Overrides */
- .cards .card .card-content {
+.uams-body.container.margin-bottom-none {
+	margin-bottom: 0px;
+}
+.cards .card .card-content {
 	padding: 0 20px 20px;
 }
 .cards .card.xs .card-content h3 {
@@ -44,6 +47,26 @@ Version: 1.0
 .primary-category a:hover,
 .primary-category a:focus {
 	border-bottom-style: dotted;
+}
+/* Event Post Overrides */
+.eventpost_calendar {
+	border-color: #DCDADB;
+}
+.eventpost_calendar tbody td {
+	padding: 0.5em 0;
+}
+.eventpost_calendar tbody button {
+	margin: -0.5em 0;
+	padding: 0.5em 0;
+	background: #DCDADB;
+	border: none;
+}
+.eventpost_calendar tbody button:hover,
+.eventpost_calendar tbody button:focus {
+	border: none;
+}
+.eventpost_calendar tbody td.event_post_day_now {
+	border-color: #9D2235;
 }
 #more-stories col-md-4.cards {
 	padding-left: 0;

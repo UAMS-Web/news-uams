@@ -1,6 +1,23 @@
 <?php get_header(); ?>
 
-<?php //get_template_part( 'header', 'image' ); ?>
+<?php
+	$term_id = get_queried_object()->term_id;
+	$images = rwmb_meta( 'cat_image', array( 'object_type' => 'term', 'size' => 'full' ), $term_id );
+	if ($images) {
+		foreach ( $images as $image ) { ?>
+			<div class="uams-hero-image hero-height" style="background-image:url(' <?php echo $image["full_url"]; ?>');" >
+				<div id="hero-bg">
+			      <div id="hero-container" class="container">
+			        <h1 class="uams-site-title">Here's to Your Health</h1>
+			        <h2>with Dr. T. Glenn Pait</h2>
+			        <span class="udub-slant"><span></span></span>
+			      </div>
+			    </div>
+			</div>
+	<?php }
+	} else { ?>
+			<div class="uams-hero-image" <?php if ( get_header_image() !== '' )  { ?> style="background-image:url('<?php echo set_url_scheme( get_header_image() ); ?>');"<?php } ?> ></div>
+	<?php } ?>
 
 <div class="container uams-body">
 
@@ -15,14 +32,18 @@
       <?php //get_template_part( 'breadcrumbs' ); ?>
 
       <div id='main_content' class="uams-body-copy" tabindex="-1">
-      <h2>University News</h2>
+<!--       <h2>Here's to Your Health</h2> -->
+      <?php if ( category_description() ) : // Show an optional category description ?>
+        <div class="archive-meta"><?php echo category_description(); ?></div>
+      <?php endif; ?>
         <?php if(!is_paged()): ?>
+<!--
         <section class="cards featured-grid">
         <?php
           // Start the Loop.
           $featured_posts = new WP_Query( array(
             'posts_per_page' => 2, // One Big, six small
-            'category_name' => 'featured+university' )
+            'category_name' => 'featured+health' )
           );
           $i=1;
 
@@ -34,7 +55,7 @@
               <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'large' ); ?>
+                <?php the_post_thumbnail( 'news-half' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
@@ -50,6 +71,10 @@
 
         </section>
         </br>
+-->
+		<h2>Latest Episodes</h2>
+		<?php else : ?>
+		<h2> Page <?php echo $paged; ?></h2>
         <?php endif; ?>
         <section class="">
           <div class="cards">
@@ -57,9 +82,9 @@
           // Start the Loop.
           $spotlight_posts = new WP_Query( array(
             'posts_per_page' => 10,
-            'category_name' => 'university',
             'paged' => $paged,
-            'post__not_in' => $do_not_duplicate )
+            'category_name' => 'heres-to-your-health')
+            //'post__not_in' => $do_not_duplicate )
           );
 
           if ( $spotlight_posts->have_posts() ) : while ( $spotlight_posts->have_posts() ) : $spotlight_posts->the_post();
@@ -92,7 +117,7 @@
 
     </div>
 
-    <?php get_sidebar() ?>
+    <?php get_sidebar(); ?>
 
   </div>
 
