@@ -22,7 +22,7 @@
           // Start the Loop.
           $featured_posts = new WP_Query( array(
             'posts_per_page' => 2, // One Big, six small
-            'category_name' => 'featured+health' ) 
+            'category_name' => 'featured+health' )
           );
           $i=1;
 
@@ -31,17 +31,18 @@
             $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array
             ?>
             <article class="card top xs">
-              <?php 
+              <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'large' ); ?>
+                <?php the_post_thumbnail( 'news-third' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
                 <div class="card-content">
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <?php the_excerpt(); ?>
+                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                 </div>
+                <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
@@ -55,20 +56,20 @@
           <div class="cards">
             <?php
           // Start the Loop.
-          $spotlight_posts = new WP_Query( array( 
-            'posts_per_page' => 10, 
+          $spotlight_posts = new WP_Query( array(
+            'posts_per_page' => 10,
             'paged' => $paged,
-            'post__not_in' => $do_not_duplicate ) 
+            'post__not_in' => $do_not_duplicate )
           );
 
           if ( $spotlight_posts->have_posts() ) : while ( $spotlight_posts->have_posts() ) : $spotlight_posts->the_post();
               // Loop output goes here
             ?>
             <article class="card right boxed">
-            <?php 
+            <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( array(130, 130) ); ?>
+                <?php the_post_thumbnail( 'news-third' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">

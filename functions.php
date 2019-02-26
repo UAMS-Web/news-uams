@@ -206,7 +206,7 @@ function get_uams_breadcrumbs()
             $html .=  '<li><a href="'  . site_url('/' . $posttype->rewrite['slug'] . '/') .'" title="'. $posttype->labels->menu_name .'">'. $posttype->labels->menu_name  . '</a>';
           }
         }
-        $html .=  '<li class="current"><span>'. get_the_title( $post->ID ) . '</span>';
+        $html .=  '<li class="current"><span>'. wp_trim_words(get_the_title( $post->ID ), 5, '...') . '</span>';
       }
     }
 
@@ -239,6 +239,10 @@ function get_uams_breadcrumbs()
     return "<nav class='uams-breadcrumbs' aria-label='breadcrumbs'><ul>$html</ul></nav>";
   }
 
+function get_uams_boilerplate() {
+	$content = rwmb_meta( 'boilerplate_html', array( 'object_type' => 'setting' ), 'uamswp_news' );
+    return $content;
+}
 add_filter( 'mb_settings_pages', 'prefix_options_page' );
 function prefix_options_page( $settings_pages ) {
     $settings_pages[] = array(
@@ -269,6 +273,18 @@ function uams_options_meta_boxes( $meta_boxes ) {
                 'taxonomy' => 'category',
                 'field_type' => 'checkbox_tree',
             ),
+            array(
+                'name' => 'Boilerplate',
+                'label_description' => 'Boilerplate content to include at bottom of articles',
+                'id' => 'boilerplate_html',
+                'type'    => 'wysiwyg',
+                'raw'     => true,
+                'options' => array(
+                    'textarea_rows' => 4,
+                    'teeny'         => true,
+                    'media_buttons' => false,
+                ),  
+           ),
         ),
     );
 
@@ -404,4 +420,77 @@ register_post_status( 'convert', array(
 			'inline_dropdown'  => __( 'To Convert',        'wp-statuses' ),
 		),
 		'dashicon'                    => 'dashicons-yes',
+) );
+function ap_date ($string_date) {
+		$ap_dates = array (
+			'Jan.', 'Feb.', 'March', 'April',
+			'May.', 'June', 'July', 'Aug.',
+			'Sept.', 'Oct.', 'Nov.', 'Dec.'
+		);
+		return $ap_dates[date('n', strtotime($string_date))-1] . ' ' .
+			   date('j', strtotime($string_date)) . ', ' .
+			   date('Y', strtotime($string_date));
+	}
+
+
+add_action( 'rest_api_init', 'uamswp_register_api_hooks' );
+function uamswp_register_api_hooks() {
+
+	// register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
+	register_rest_field( 'post', 'fullcontent', array(
+		'get_callback' => 'uamswp_return_full_content',
+		'schema' => null,
 	) );
+}
+
+function uamswp_return_full_content( $object ) {
+	//get the id of the post object array
+	$post_id = $object['id'];
+
+	$content = $object['content']['rendered'];
+	$date = $object['date'];
+	$includeboiler = get_post_meta( $post_id, 'include_boilerplate', true );
+	$boiler = get_uams_boilerplate();
+	$beforecontent = '<span class="entrydate"><time datetime="' . $date .'" itemprop="datePublished">'. ap_date($date) .'</time></span> | ';
+	$first_para_pos = strpos( $content, '<p>' );
+	$fullcontent = substr_replace( $content, $beforecontent, $first_para_pos + 3, 0 );
+	if($includeboiler == "1") {
+		$fullcontent = $fullcontent . $boiler;
+	}
+
+	return  $fullcontent;
+}
+
+
+
+add_action( 'rest_api_init', 'create_api_posts_meta_field' );
+
+function create_api_posts_meta_field() {
+
+	// register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
+	register_rest_field( 'post', 'post-meta-fields', array(
+		'get_callback' => 'get_post_meta_for_api',
+		'schema' => null,
+	) );
+}
+
+function get_post_meta_for_api( $object ) {
+	//get the id of the post object array
+	$post_id = $object['id'];
+
+	//return the post meta
+	return get_post_meta( $post_id );
+}
+function uamswp_before_after($content) {
+	if (is_single() && is_main_query()){
+    	$beforecontent = '<span class="entrydate"><time datetime="' . get_the_date('c') .'" itemprop="datePublished">'. ap_date(get_the_date()) .'</time><span> | ';
+		$aftercontent = '';
+		$first_para_pos = strpos( $content, '<p>' );
+		$fullcontent = substr_replace( $content, $beforecontent, $first_para_pos + 3, 0 );
+	} else {
+		$fullcontent = $content;
+    }
+
+    return $fullcontent;
+}
+add_filter('the_content', 'uamswp_before_after');

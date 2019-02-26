@@ -12,16 +12,18 @@ if ( ($show_image !== false ) && is_single() && get_post_thumbnail_id() ) { ?>
     </p>
 <?php
 }
+/*
 if (is_single() || is_home()){
     the_date('F j, Y', '<p class="date">', '</p>');
 }
+*/
 ?>
 <h1><?php the_title() ?></h1>
 <?php
 if ((is_single() || is_home()) && get_option('show_byline_on_posts')) :
 ?>
 <div class="author-info">
-    <?php if ( function_exists( 'coauthors' ) ) { coauthors(); } else { the_author(); } ?>
+    By <?php if ( function_exists( 'coauthors' ) ) { coauthors(); } else { the_author(); } ?>
     <p class="author-desc"> <small><?php the_author_meta(); ?></small></p>
 </div>
 <?php
@@ -42,11 +44,7 @@ endif;
   } else
     the_content();
     //comments_template(true);
-   if( is_single() && get_post_meta(get_the_ID(), 'include_boilerplate', true)) { ?>
-      <!-- #Begin UAMS Boilerplate -->
-      <hr size="1" width="85%"/><br/>
-      <p>UAMS is the state’s only health sciences university, with colleges of Medicine, Nursing, Pharmacy, Health Professions and Public Health; a graduate school; hospital; northwest Arkansas regional campus; statewide network of regional centers; and seven institutes: the Winthrop P. Rockefeller Cancer Institute, Jackson T. Stephens Spine &amp; Neurosciences Institute, Myeloma Institute, Harvey &amp; Bernice Jones Eye Institute, Psychiatric Research Institute, Donald W. Reynolds Institute on Aging and Translational Research Institute. It is the only adult Level 1 trauma center in the state. UAMS has 2,834 students, 822 medical residents and six dental residents. It is the state’s largest public employer with more than 10,000 employees, including 1,200 physicians who provide care to patients at UAMS, its regional campuses throughout the state, Arkansas Children’s Hospital, the VA Medical Center and Baptist Health. Visit <a href="http://www.uams.edu/">www.uams.edu</a> or <a href="http://www.uamshealth.com/" title="http://www.uamshealth.com/">www.uamshealth.com</a>. Find us on <a href="https://www.facebook.com/UAMShealth">Facebook</a>, <a href="https://twitter.com/uamshealth">Twitter</a>, <a href="https://www.youtube.com/user/UAMSHealth">YouTube</a> or <a href="https://instagram.com/uamshealth/">Instagram</a>.</p>
-      <p class="align-center textcenter">###</p>
-      <!-- #End UAMS Boilerplate -->
-    <?php }
+	if( is_single() && get_post_meta(get_the_ID(), 'include_boilerplate', true)) {
+		echo get_uams_boilerplate();
+	}
  ?>

@@ -22,7 +22,7 @@
           // Start the Loop.
           $featured_posts = new WP_Query( array(
             'posts_per_page' => 2, // One Big, six small
-            'category_name' => 'featured+patient-stories' ) 
+            'category_name' => 'featured+patient-stories' )
           );
           $i=1;
 
@@ -31,7 +31,7 @@
             $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array
             ?>
             <article class="card top xs">
-              <?php 
+              <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
                 <?php the_post_thumbnail( 'large' ); ?>
@@ -55,17 +55,18 @@
           <div class="cards">
             <?php
           // Start the Loop.
-          $spotlight_posts = new WP_Query( array( 
-            'posts_per_page' => 10, 
+          $spotlight_posts = new WP_Query( array(
+            'posts_per_page' => 10,
             'paged' => $paged,
-            'post__not_in' => $do_not_duplicate ) 
+            'category_name' => 'patient-stories',
+            'post__not_in' => $do_not_duplicate )
           );
 
           if ( $spotlight_posts->have_posts() ) : while ( $spotlight_posts->have_posts() ) : $spotlight_posts->the_post();
               // Loop output goes here
             ?>
             <article class="card right boxed">
-            <?php 
+            <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
                 <?php the_post_thumbnail( array(130, 130) ); ?>

@@ -34,14 +34,15 @@
               <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'large' ); ?>
+                <?php the_post_thumbnail( 'news-third' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
                 <div class="card-content">
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <?php the_excerpt(); ?>
+                   <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                 </div>
+                <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
@@ -69,14 +70,14 @@
             <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php the_post_thumbnail( array(130, 130) ); ?>
+                <?php the_post_thumbnail( 'news-third' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
                 <div class="card-content">
                   <!-- <span class="primary-category"><?php echo uams_primary_post_category(); ?></span> -->
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <?php the_excerpt(); ?>
+                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                  </div>
               </div>
             </article>

@@ -46,10 +46,9 @@
                 <div class="card-content">
                   <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <?php the_excerpt(); ?>
-
+                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                 </div>
-                <div class="card-action"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
+                <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
@@ -65,7 +64,7 @@
           // Start the Loop.
           $spotlight_posts = new WP_Query( array(
             'posts_per_page' => 3,
-            'category_name' => 'university',
+            'category__in' => 3852,
             'post__not_in' => $do_not_duplicate )
           );
 
@@ -83,9 +82,9 @@
                 <div class="card-content">
                   <!-- <span class="primary-category"><?php echo uams_primary_post_category(); ?></span> -->
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <?php the_excerpt(); ?>
+                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                  </div>
-                 <div class="card-action"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
+                 <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
@@ -126,9 +125,9 @@
                 <div class="card-content">
                   <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <?php the_excerpt(); ?>
+                   <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                 </div>
-                <div class="card-footer"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
+                <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
@@ -155,9 +154,9 @@
                   <div class="card-content">
                     <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                     <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                    <?php the_excerpt(); ?>
+                     <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
                   </div>
-                  <div class="card-footer"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
+                  <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
                 </div>
               </article>
 
