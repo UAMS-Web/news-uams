@@ -280,7 +280,7 @@ function uams_options_meta_boxes( $meta_boxes ) {
                 'type'    => 'wysiwyg',
                 'raw'     => true,
                 'options' => array(
-                    'textarea_rows' => 4,
+                    'textarea_rows' => 8,
                     'teeny'         => true,
                     'media_buttons' => false,
                 ),  
