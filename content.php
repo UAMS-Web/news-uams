@@ -8,6 +8,10 @@ if ( ($show_image !== false ) && is_single() && get_post_thumbnail_id() ) { ?>
       <?php if ( get_post_field('post_excerpt', get_post_thumbnail_id() )) { ?>
         <br/><span class="wp-caption-text"><?php echo get_post_field('post_excerpt', get_post_thumbnail_id()); ?></span>
         <?php } ?>
+	<?php 
+          $credit = get_post_meta( get_post_thumbnail_id(), '_media_credit', true ); 
+          echo $credit ? '<span class="wp-media-credit">Image by ' . $credit . '</spna>' : '';
+        ?>
       </a>
     </p>
 <?php
