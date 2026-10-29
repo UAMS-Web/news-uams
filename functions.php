@@ -240,8 +240,8 @@ function get_uams_breadcrumbs()
   }
 
 function get_uams_boilerplate() {
-	$content = rwmb_meta( 'boilerplate_html', array( 'object_type' => 'setting' ), 'uamswp_news' );
-    return $content;
+	$content = rwmb_meta( 'boilerplate_html', ['object_type' => 'setting' ], 'uamswp_news' );
+      return $content;
 }
 add_filter( 'mb_settings_pages', 'prefix_options_page' );
 function prefix_options_page( $settings_pages ) {
@@ -280,10 +280,10 @@ function uams_options_meta_boxes( $meta_boxes ) {
                 'type'    => 'wysiwyg',
                 'raw'     => true,
                 'options' => array(
-                    'textarea_rows' => 4,
+                    'textarea_rows' => 8,
                     'teeny'         => true,
                     'media_buttons' => false,
-                ),  
+                ),
            ),
         ),
     );
@@ -322,7 +322,9 @@ function uams_news_meta_boxes( $meta_boxes ) {
                 'name'  => 'News Release PDF',
                 'type'  => 'file_input',
                 'desc'  => 'Please upload PDF version of the Official News Release',
+                'force_delete'     => false,
             ),
+/*
             array(
                 'name'            => 'Media Contact',
                 'id'              => 'media_contact',
@@ -330,16 +332,18 @@ function uams_news_meta_boxes( $meta_boxes ) {
                 // Array of 'value' => 'Label' pairs
                 'options'         => array(
 	                // Create sidebar for each one
-                    'Media Taylor-Peel'     => 'Taylor-Peel',
-                    'Media Peel-Dupins'     => 'Peel-Dupins',
-                    'Media Taylor-Dupins'   => 'Taylor-Dupins',
-                    'Media Taylor-Caldwell' => 'Taylor-Caldwell',
+//                    'Media Taylor-Peel'     => 'Taylor-Peel',
+//                    'Media Peel-Dupins'     => 'Peel-Dupins',
+//                    'Media Taylor-Dupins'   => 'Taylor-Dupins',
+//                    'Media Taylor-Caldwell' => 'Taylor-Caldwell',
+                    'Media Taylor-Chase' 	=> 'Taylor-Chase',
                 ),
                 // Allow to select multiple value?
                 'multiple'        => false,
                 // Placeholder text
                 'placeholder'     => 'Select an group',
             ),
+*/
         )
     );
     $meta_boxes[] = array(
@@ -402,6 +406,11 @@ add_image_size( 'news-third', 400, 225, true );
 add_image_size( 'news-quarter', 320, 180, true );
 add_image_size( 'uams_news', 560, 350, true ); //16x10 format cropped
 
+// UAMS 2020 Sizes
+add_image_size( 'aspect-16-9', 1024, 576, true );
+add_image_size( 'aspect-16-9-small', 512, 288, true );
+
+
 register_post_status( 'convert', array(
 		/* WordPress built in arguments. */
 		'label'                       => __( 'Convert', 'wp-statuses' ),
@@ -424,7 +433,7 @@ register_post_status( 'convert', array(
 function ap_date ($string_date) {
 		$ap_dates = array (
 			'Jan.', 'Feb.', 'March', 'April',
-			'May.', 'June', 'July', 'Aug.',
+			'May', 'June', 'July', 'Aug.',
 			'Sept.', 'Oct.', 'Nov.', 'Dec.'
 		);
 		return $ap_dates[date('n', strtotime($string_date))-1] . ' ' .
@@ -480,6 +489,24 @@ function get_post_meta_for_api( $object ) {
 
 	//return the post meta
 	return get_post_meta( $post_id );
+}
+// Add post category title
+add_action( 'rest_api_init', 'create_api_posts_category' );
+
+function create_api_posts_category() {
+
+	// register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
+	register_rest_field( 'post', 'post_categories', array(
+		'get_callback' => 'get_post_categories_for_api',
+		'schema' => null,
+	) );
+}
+function get_post_categories_for_api( $object ) {
+	//get the id of the post object array
+	$post_id = $object['id'];
+
+	//return the post meta
+	return get_the_terms( $post_id, 'category' );
 }
 function uamswp_before_after($content) {
 	if (is_single() && is_main_query()){

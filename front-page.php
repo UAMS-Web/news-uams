@@ -102,9 +102,11 @@
               <?php
           // Start the Loop.
           $exclude_more_list = array("16885", "16883", "16878", "16894");
+          $exclude_id_list = array();
+//           $exclude_id_list = exclude_id_list();
           $more_posts = new WP_Query( array(
               'posts_per_page' => 8,
-              'category__not_in' => array_merge( exclude_id_list(), $exclude_more_list), // Exclude inside articles
+              'category__not_in' => array_merge($exclude_id_list, $exclude_more_list), // Exclude inside articles
               'post__not_in' => $do_not_duplicate )
           );
           $i=0;
@@ -169,15 +171,15 @@
               <?php
           // Start the Loop.
           $exclude_announce_list = array("16885", "16883");
+//           $exclude_id_list = exclude_id_list();
           $announce_posts = new WP_Query( array(
               'posts_per_page' => 10,
               'category_name' => 'announcements',
-              'category__not_in' => array_merge( exclude_id_list(), $exclude_announce_list), // Exclude inside articles
+              'category__not_in' => array_merge( $exclude_id_list, $exclude_announce_list), // Exclude inside articles
               'post__not_in' => $do_not_duplicate )
           );
 
           if ( $announce_posts->have_posts() ) : ?>
-          <script><?php print_r( exclude_id_list() ); ?></script>
             <ul>
 
            <?php while ( $announce_posts->have_posts() ) : $announce_posts->the_post();
@@ -191,7 +193,7 @@
             </ul>
             <?php endif; ?>
 
-              <h3>Academic & Continuing Education Events</h3>
+            <?php //echo '<h3>Academic & Continuing Education Events</h3>'; ?>
 <!--
               <?php
           // Start the Loop.
@@ -216,8 +218,8 @@
             <?php endif; ?>
             <h3>Upcoming Events</h3>
 -->
-            <?php echo do_shortcode( '[events_list future=1 cat="16885" past=0 nb=5]' ); ?>
-			<a class="more" href="https://news.uams.edu/upcoming-academic-continuing-education-events/">View More Events</a>
+            <?php //echo do_shortcode( '[events_list future=1 cat="16885" past=0 nb=5]' ); ?>
+			<?php //echo '<a class="more" href="https://news.uams.edu/upcoming-academic-continuing-education-events/">View More Events</a>'; ?>
 
             </div><!-- .col-md-4 -->
           </div><!-- .row -->
@@ -230,21 +232,19 @@
               <script class="ai1ec-widget-placeholder" data-widget="ai1ec_agenda_widget" data-events_seek_type="events" data-cat_ids="18,4,3,5" data-events_per_page="6" defer>
                 (function(){var d=document,s=d.createElement('script'),
                 i='ai1ec-script';if(d.getElementById(i))return;s.async=1;
-                s.id=i;s.src='//calendar.uams.edu/?ai1ec_js_widget';
+                s.id=i;s.src='//cal.uams.edu/?ai1ec_js_widget';
                 d.getElementsByTagName('head')[0].appendChild(s);})();
               </script>
 
-              <p><a href="/events/">View More Events</a></p>
+              <p><a href="https://calendar.uams.edu/">View More Events</a></p>
             </div>
             <div class="col-md-4">
               <!-- Scroller :( -->
-              <h3>UAMS In the News</h3>
-              <iframe scrolling="no" allowtransparency="65535" width="240" frameborder="0" src="https://ec2a.newsdataservice.com/MMB_UAMS_HomepageScroll_Iframe.html" height="360" style="overflow-x: hidden;" class="DRAGDIS_iframe">
-              </iframe>
+             
             </div>
             <div class="col-md-4">
               <!-- Video -->
-              <h3>Youtube</h3>
+              <h3>YouTube</h3>
               <iframe width="400" height="300" src="https://www.youtube.com/embed/videoseries?list=PL046D8DC766672966" frameborder="0" allowfullscreen></iframe>
             </div>
           </div><!-- .row -->

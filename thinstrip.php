@@ -4,7 +4,7 @@
   </div>
   <div class="container">
 	<div id="site-title">
-		<h1 class="vertical-align"><?php uams_site_title(); ?></h1>
+		<div class="vertical-align h1"><?php uams_site_title(); ?></div>
     </div>
   </div>
   <div class='align-right thin-nav'>
