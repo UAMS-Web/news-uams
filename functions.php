@@ -51,7 +51,7 @@ function uams_primary_post_category() {
             return $cat;
         } else { //return first category
             $categories = get_the_category();
-    
+
             // Do nothing if there are no categories.
             if ( ! $categories ) {
                 return '';
@@ -59,16 +59,16 @@ function uams_primary_post_category() {
 
             $i = 0;
 
-            if ( $categories[$i]->term_id == '9' ) { // "Featured" category, 5 on live
+            if ( $categories[$i]->term_id == '5' ) { // "Featured" category
                 $i++;
             }
-    
+
             $cat_name = esc_html($categories[$i]->name);
-    
+
             $cat_link = get_category_link( $categories[$i]->term_id );
-    
+
             $cat = '<a href="' . $cat_link . '">' . $cat_name . '</a>';
-    
+
             return $cat;
         }
 
@@ -82,7 +82,7 @@ function uams_primary_post_category() {
 
         $i = 0;
 
-        if ( $categories[$i]->term_id == '9' ) { // "Featured" category, 5 on live
+        if ( $categories[$i]->term_id == '5' ) { // "Featured" category
             $i++;
         }
 
@@ -134,7 +134,7 @@ function uams_options_meta_boxes( $meta_boxes ) {
 }
 
 function exclude_id_list() {
-    $terms =  rwmb_meta( 'exclude_cat', array( 'object_type' => 'setting' ), 'uamswp_news' ); 
+    $terms =  rwmb_meta( 'exclude_cat', array( 'object_type' => 'setting' ), 'uamswp_news' );
         if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
             foreach ( $terms as $term ) {
                 $value[] = $term->term_id;
@@ -205,7 +205,7 @@ function uams_news_meta_boxes( $meta_boxes ) {
 // add_filter( 'excerpt_length', 'wpdocs_custom_excerpt_length', 999 );
 
 /* Add Custom Image Sizes */
-add_image_size( 'news-full', 960, 540, true );
-add_image_size( 'news-half', 560, 315, true );
-add_image_size( 'news-third', 400, 225, true );
-add_image_size( 'news-quarter', 320, 180, true );
+add_image_size( 'news-full', 960, 600, true );
+add_image_size( 'news-half', 560, 350, true );
+add_image_size( 'news-third', 400, 250, true );
+add_image_size( 'news-quarter', 320, 200, true );

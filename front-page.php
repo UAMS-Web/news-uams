@@ -2,7 +2,7 @@
 
 <?php //get_template_part( 'header', 'image' ); ?>
 
-<div class="container uams-body">
+<div class="container uams-body margin-bottom-none">
 
   <div class="row">
 
@@ -16,12 +16,12 @@
 
       <div id='main_content' class="uams-body-copy" tabindex="-1">
 
-        <section class="cards featured-grid">
+        <section class="cards featured-grid margin-top-one">
         <?php
           // Start the Loop.
           $featured_posts = new WP_Query( array(
             'posts_per_page' => 7, // One Big, six small
-            'category_name' => 'featured' ) 
+            'category_name' => 'featured' )
           );
           $i=1;
 
@@ -30,16 +30,10 @@
             $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array
             ?>
             <article class="card top <?php echo ( $i == 1 ? 'med' : 'xs' ); ?>">
-              <?php 
+              <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
-                <?php 
-                if ( $i == 1 ) {
-                  the_post_thumbnail( 'news-half' ); 
-                } else {
-                  the_post_thumbnail( 'news-third' ); 
-                }
-                ?>
+                <?php the_post_thumbnail( 'news-half' ); ?>
               </div>
               <?php endif; ?>
               <div class="card-stack">
@@ -47,7 +41,7 @@
                   <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
                   <?php the_excerpt(); ?>
-                  
+
                 </div>
                 <div class="card-action"><i class="far fa-calendar"></i> <?php the_time('M j, Y') ?></div>
               </div>
@@ -59,21 +53,21 @@
         </section>
         </br>
         <section id="spotlight" class="gray10 uams-full-width padding-one">
-          <h2 class="text-center margin-top-none">University News</h2>
+          <h2 class="text-center margin-top-quarter">University News</h2>
           <div class="inner-container cards">
             <?php
           // Start the Loop.
-          $spotlight_posts = new WP_Query( array( 
-            'posts_per_page' => 3, 
+          $spotlight_posts = new WP_Query( array(
+            'posts_per_page' => 3,
             'category_name' => 'university',
-            'post__not_in' => $do_not_duplicate ) 
+            'post__not_in' => $do_not_duplicate )
           );
 
           if ( $spotlight_posts->have_posts() ) : while ( $spotlight_posts->have_posts() ) : $spotlight_posts->the_post();
               // Loop output goes here
             ?>
             <article class="card top xs">
-            <?php 
+            <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
                 <?php the_post_thumbnail( 'news-half' ); ?>
@@ -96,26 +90,26 @@
           </div><!-- .inner-container -->
           </section><!-- #spotlight -->
           <section>
-          <h2>More Stories</h2>
+          <h2 class="margin-top-half">More Stories</h2>
           <div class="row">
             <div class="col-md-4 cards">
               <!-- small cards News -->
               <?php
           // Start the Loop.
-          $more_posts = new WP_Query( array( 
-              'posts_per_page' => 8, 
-              'category__not_in' => exclude_id_list(), // Exclude inside articles  
+          $more_posts = new WP_Query( array(
+              'posts_per_page' => 8,
+              'category__not_in' => exclude_id_list(), // Exclude inside articles
               'post__not_in' => $do_not_duplicate )
           );
           $i=0;
           if ($more_posts->have_posts()) :
             //var_dump ($more_posts);
-          while($more_posts->have_posts()) : $i++; 
+          while($more_posts->have_posts()) : $i++;
             if(($i % 2) == 0) : $more_posts->next_post(); else : $more_posts->the_post();
               // Loop output goes here
             ?>
             <article class="card xs gray5">
-            <?php 
+            <?php
                if ( has_post_thumbnail() ) : ?>
               <div class="card-image">
                 <?php the_post_thumbnail( 'news-third' ); ?>
@@ -139,12 +133,12 @@
             </div><!-- .col-md-4 -->
             <div class="col-md-4 cards">
             <?php
-            while($more_posts->have_posts()) : $i++; 
+            while($more_posts->have_posts()) : $i++;
               if(($i % 2) !== 0) : $more_posts->next_post(); else : $more_posts->the_post();
                 // Loop output goes here
               ?>
-              <article class="card xs  gray5">
-              <?php 
+              <article class="card xs gray5">
+              <?php
                if ( has_post_thumbnail() ) : ?>
                 <div class="card-image">
                   <?php the_post_thumbnail( 'news-third' ); ?>
@@ -168,9 +162,9 @@
               <h3>Institute News</h3>
               <?php
           // Start the Loop.
-          $institute_posts = new WP_Query( array( 
-              'posts_per_page' => 3, 
-              'category__not_in' => exclude_id_list(), // Exclude inside articles  
+          $institute_posts = new WP_Query( array(
+              'posts_per_page' => 3,
+              'category__not_in' => exclude_id_list(), // Exclude inside articles
               'post__not_in' => $do_not_duplicate )
           );
 
@@ -191,9 +185,9 @@
               <h3>College News</h3>
               <?php
           // Start the Loop.
-          $college_posts = new WP_Query( array( 
-              'posts_per_page' => 3, 
-              'category__not_in' => exclude_id_list(), // Exclude inside articles  
+          $college_posts = new WP_Query( array(
+              'posts_per_page' => 3,
+              'category__not_in' => exclude_id_list(), // Exclude inside articles
               'post__not_in' => $do_not_duplicate )
           );
 
@@ -209,7 +203,6 @@
             <?php  endwhile; ?>
             </ul>
             <?php endif; ?>
-              
             </div><!-- .col-md-4 -->
           </div><!-- .row -->
           </section>
