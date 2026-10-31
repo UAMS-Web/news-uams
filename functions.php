@@ -322,6 +322,7 @@ function uams_news_meta_boxes( $meta_boxes ) {
                 'name'  => 'News Release PDF',
                 'type'  => 'file_input',
                 'desc'  => 'Please upload PDF version of the Official News Release',
+                'force_delete'     => false,
             ),
             array(
                 'name'            => 'Media Contact',
@@ -402,6 +403,10 @@ add_image_size( 'news-third', 400, 225, true );
 add_image_size( 'news-quarter', 320, 180, true );
 add_image_size( 'uams_news', 560, 350, true ); //16x10 format cropped
 
+// UAMS 2020 Sizes
+add_image_size( 'aspect-16-9', 1024, 576, true );
+add_image_size( 'aspect-16-9-small', 512, 288, true );
+
 register_post_status( 'convert', array(
 		/* WordPress built in arguments. */
 		'label'                       => __( 'Convert', 'wp-statuses' ),
@@ -424,7 +429,7 @@ register_post_status( 'convert', array(
 function ap_date ($string_date) {
 		$ap_dates = array (
 			'Jan.', 'Feb.', 'March', 'April',
-			'May.', 'June', 'July', 'Aug.',
+			'May', 'June', 'July', 'Aug.',
 			'Sept.', 'Oct.', 'Nov.', 'Dec.'
 		);
 		return $ap_dates[date('n', strtotime($string_date))-1] . ' ' .
@@ -480,6 +485,24 @@ function get_post_meta_for_api( $object ) {
 
 	//return the post meta
 	return get_post_meta( $post_id );
+}
+// Add post category title
+add_action( 'rest_api_init', 'create_api_posts_category' );
+
+function create_api_posts_category() {
+
+	// register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
+	register_rest_field( 'post', 'post_categories', array(
+		'get_callback' => 'get_post_categories_for_api',
+		'schema' => null,
+	) );
+}
+function get_post_categories_for_api( $object ) {
+	//get the id of the post object array
+	$post_id = $object['id'];
+
+	//return the post meta
+	return get_the_terms( $post_id, 'category' );
 }
 function uamswp_before_after($content) {
 	if (is_single() && is_main_query()){
