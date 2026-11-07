@@ -1,0 +1,15 @@
+{
+    "name": "uams-web/news-uams",
+    "description": "Child theme for UAMS News (development-only Composer file; the theme ships no Composer dependencies).",
+    "type": "wordpress-theme",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2"
+    },
+    "config": {
+        "platform": {
+            "php": "8.4.27"
+        },
+        "sort-packages": true
+    }
+}
