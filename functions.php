@@ -251,7 +251,7 @@ function uams_news_meta_box_notice() {
         return;
     }
     $install_url = current_user_can( 'install_plugins' )
-        ? admin_url( 'plugin-install.php?s=meta-box&tab=search&type=term' )
+        ? ( is_multisite() ? network_admin_url( 'plugin-install.php?s=meta-box&tab=search&type=term' ) : admin_url( 'plugin-install.php?s=meta-box&tab=search&type=term' ) )
         : 'https://wordpress.org/plugins/meta-box/';
     printf(
         '<div class="notice notice-error"><p>%s</p></div>',
