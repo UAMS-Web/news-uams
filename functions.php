@@ -239,7 +239,117 @@ function get_uams_breadcrumbs()
     return "<nav class='uams-breadcrumbs' aria-label='breadcrumbs'><ul>$html</ul></nav>";
   }
 
+/**
+ * Warn administrators when Meta Box, or an extension the theme uses, is not active.
+ *
+ * The theme reads its settings and term images through rwmb_meta() and
+ * registers its fields on the rwmb_meta_boxes and mb_settings_pages filters.
+ * Two extensions that are not on wordpress.org supply the settings page
+ * (MB Settings Page) and the category field (MB Term Meta).
+ *
+ * Each plugin is in one of three states: active (no message), installed but
+ * not activated (an Activate link), or not installed (an Install link for
+ * Meta Box, a download link and an upload link for the extensions).
+ */
+add_action( 'admin_notices', 'uams_news_meta_box_notice' );
+function uams_news_meta_box_notice() {
+    if ( ! current_user_can( 'activate_plugins' ) ) {
+        return;
+    }
+
+    $required = array(
+        array(
+            'file'    => 'meta-box/meta-box.php',
+            'name'    => 'Meta Box',
+            'purpose' => __( 'custom fields, settings and category images', 'news-uams' ),
+            'active'  => function_exists( 'rwmb_meta' ),
+            'slug'    => 'meta-box',
+            'get_url' => 'https://wordpress.org/plugins/meta-box/',
+        ),
+        array(
+            'file'    => 'mb-settings-page/mb-settings-page.php',
+            'name'    => 'MB Settings Page',
+            'purpose' => __( 'the News Settings page', 'news-uams' ),
+            'active'  => function_exists( 'mb_settings_page_load' ),
+            'slug'    => '',
+            'get_url' => 'https://metabox.io/plugins/mb-settings-page/',
+        ),
+        array(
+            'file'    => 'mb-term-meta/mb-term-meta.php',
+            'name'    => 'MB Term Meta',
+            'purpose' => __( 'the category image field', 'news-uams' ),
+            'active'  => function_exists( 'mb_term_meta_load' ),
+            'slug'    => '',
+            'get_url' => 'https://metabox.io/plugins/mb-term-meta/',
+        ),
+    );
+
+    $installed = get_plugins();
+    $admin_url = is_multisite() ? 'network_admin_url' : 'admin_url';
+    $can_install = current_user_can( 'install_plugins' );
+    $items = array();
+
+    foreach ( $required as $plugin ) {
+        if ( $plugin['active'] ) {
+            continue;
+        }
+
+        $label = '<strong>' . esc_html( $plugin['name'] ) . '</strong> (' . esc_html( $plugin['purpose'] ) . ')';
+
+        if ( array_key_exists( $plugin['file'], $installed ) ) {
+            // Installed but not activated.
+            $url     = wp_nonce_url( call_user_func( $admin_url, 'plugins.php?action=activate&plugin=' . rawurlencode( $plugin['file'] ) ), 'activate-plugin_' . $plugin['file'] );
+            $items[] = sprintf(
+                /* translators: 1: plugin name and purpose, 2: link to activate it, 3: plugin name. */
+                esc_html__( '%1$s is installed but not activated. %2$s', 'news-uams' ),
+                $label,
+                '<a href="' . esc_url( $url ) . '">' . esc_html( sprintf( __( 'Activate %s', 'news-uams' ), $plugin['name'] ) ) . '</a>'
+            );
+        } elseif ( $plugin['slug'] ) {
+            // Not installed, and available on wordpress.org.
+            $url     = $can_install
+                ? wp_nonce_url( call_user_func( $admin_url, 'update.php?action=install-plugin&plugin=' . $plugin['slug'] ), 'install-plugin_' . $plugin['slug'] )
+                : $plugin['get_url'];
+            $items[] = sprintf(
+                /* translators: 1: plugin name and purpose, 2: link to install or get it. */
+                esc_html__( '%1$s is not installed. %2$s', 'news-uams' ),
+                $label,
+                '<a href="' . esc_url( $url ) . '">' . esc_html( sprintf( $can_install ? __( 'Install %s', 'news-uams' ) : __( 'Get %s', 'news-uams' ), $plugin['name'] ) ) . '</a>'
+            );
+        } else {
+            // Not installed, and not on wordpress.org: download, then upload.
+            $links = '<a href="' . esc_url( $plugin['get_url'] ) . '">' . esc_html__( 'Download from metabox.io', 'news-uams' ) . '</a>';
+            if ( $can_install ) {
+                $links .= ', ' . esc_html__( 'then', 'news-uams' ) . ' <a href="' . esc_url( call_user_func( $admin_url, 'plugin-install.php?tab=upload' ) ) . '">' . esc_html__( 'upload it', 'news-uams' ) . '</a>';
+            }
+            $items[] = sprintf(
+                /* translators: 1: plugin name and purpose, 2: download and upload links. */
+                esc_html__( '%1$s is not installed, and is not on wordpress.org. %2$s.', 'news-uams' ),
+                $label,
+                $links
+            );
+        }
+    }
+
+    if ( ! $items ) {
+        return;
+    }
+
+    printf(
+        '<div class="notice notice-error"><p>%s</p><ul style="list-style:disc;margin-left:2em">%s</ul></div>',
+        sprintf(
+            /* translators: %s: name of the active theme. */
+            esc_html__( '%s needs these plugins to work:', 'news-uams' ),
+            esc_html( wp_get_theme()->get( 'Name' ) )
+        ),
+        '<li>' . implode( '</li><li>', $items ) . '</li>'
+    );
+}
+
 function get_uams_boilerplate() {
+	if ( ! function_exists( 'rwmb_meta' ) ) {
+		return '';
+	}
 	$content = rwmb_meta( 'boilerplate_html', array( 'object_type' => 'setting' ), 'uamswp_news' );
     return $content;
 }
@@ -292,6 +402,10 @@ function uams_options_meta_boxes( $meta_boxes ) {
 }
 
 function exclude_id_list() {
+    $value = array();
+    if ( ! function_exists( 'rwmb_meta' ) ) {
+        return $value;
+    }
     $terms =  rwmb_meta( 'exclude_cat', array( 'object_type' => 'setting' ), 'uamswp_news' );
         if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
             foreach ( $terms as $term ) {
