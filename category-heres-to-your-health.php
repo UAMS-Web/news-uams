@@ -2,7 +2,7 @@
 
 <?php
 	$term_id = get_queried_object()->term_id;
-	$images = rwmb_meta( 'cat_image', array( 'object_type' => 'term', 'size' => 'full' ), $term_id );
+	$images = function_exists( 'rwmb_meta' ) ? rwmb_meta( 'cat_image', array( 'object_type' => 'term', 'size' => 'full' ), $term_id ) : array();
 	if ($images) {
 		foreach ( $images as $image ) { ?>
 			<div class="uams-hero-image hero-height" style="background-image:url(' <?php echo $image["full_url"]; ?>');" >
