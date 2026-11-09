@@ -593,12 +593,34 @@ function create_api_posts_meta_field() {
 	) );
 }
 
+/**
+ * Meta keys the public `post-meta-fields` REST field exposes.
+ *
+ * The posts endpoint answers anonymous requests, so this list is the whole surface: add a key
+ * only when a consumer reads it, and never a `_`-prefixed (protected) key.
+ */
+function uamswp_api_post_meta_keys() {
+	return array(
+		'include_boilerplate',
+		'media_contact',
+		'news_release_pdf_url',
+		'show_image_single',
+	);
+}
+
 function get_post_meta_for_api( $object ) {
 	//get the id of the post object array
 	$post_id = $object['id'];
 
-	//return the post meta
-	return get_post_meta( $post_id );
+	//return only the allowlisted meta, in the same key => array-of-values shape as before
+	$meta = array();
+	foreach ( uamswp_api_post_meta_keys() as $key ) {
+		$values = get_post_meta( $post_id, $key );
+		if ( ! empty( $values ) ) {
+			$meta[ $key ] = $values;
+		}
+	}
+	return $meta;
 }
 // Add post category title
 add_action( 'rest_api_init', 'create_api_posts_category' );

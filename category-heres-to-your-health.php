@@ -5,7 +5,7 @@
 	$images = function_exists( 'rwmb_meta' ) ? rwmb_meta( 'cat_image', array( 'object_type' => 'term', 'size' => 'full' ), $term_id ) : array();
 	if ($images) {
 		foreach ( $images as $image ) { ?>
-			<div class="uams-hero-image hero-height" style="background-image:url(' <?php echo $image["full_url"]; ?>');" >
+			<div class="uams-hero-image hero-height" style="background-image:url(' <?php echo esc_url( $image["full_url"] ); ?>');" >
 				<div id="hero-bg">
 			      <div id="hero-container" class="container">
 			        <h1 class="uams-site-title">Here's to Your Health</h1>
