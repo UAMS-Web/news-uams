@@ -250,12 +250,16 @@ function uams_news_meta_box_notice() {
     if ( function_exists( 'rwmb_meta' ) || ! current_user_can( 'activate_plugins' ) ) {
         return;
     }
+    $install_url = current_user_can( 'install_plugins' )
+        ? admin_url( 'plugin-install.php?s=meta-box&tab=search&type=term' )
+        : 'https://wordpress.org/plugins/meta-box/';
     printf(
         '<div class="notice notice-error"><p>%s</p></div>',
         sprintf(
-            /* translators: %s: link to the Plugins screen. */
-            esc_html__( 'The News theme requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated on the %s screen.', 'news-uams' ),
-            '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">' . esc_html__( 'Plugins', 'news-uams' ) . '</a>'
+            /* translators: 1: link to install or download Meta Box, 2: link to the Meta Box extensions page. */
+            esc_html__( 'The News theme requires the %1$s plugin, which is not active. Settings and category images will not load until it is installed and activated. The theme\'s settings page also needs the Meta Box Settings Page extension (%2$s).', 'news-uams' ),
+            '<a href="' . esc_url( $install_url ) . '">Meta Box</a>',
+            '<a href="https://metabox.io/plugins/mb-settings-page/">metabox.io</a>'
         )
     );
 }
