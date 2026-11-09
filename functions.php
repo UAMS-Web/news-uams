@@ -247,9 +247,40 @@ function get_uams_breadcrumbs()
  */
 add_action( 'admin_notices', 'uams_news_meta_box_notice' );
 function uams_news_meta_box_notice() {
-    if ( function_exists( 'rwmb_meta' ) || ! current_user_can( 'activate_plugins' ) ) {
+    if ( ! current_user_can( 'activate_plugins' ) ) {
         return;
     }
+
+    $extension_note = sprintf(
+        /* translators: %s: link to the Meta Box Settings Page extension. */
+        esc_html__( 'The theme\'s settings page needs the Meta Box Settings Page extension, which is not on wordpress.org: %s.', 'news-uams' ),
+        '<a href="https://metabox.io/plugins/mb-settings-page/">metabox.io</a>'
+    );
+
+    if ( function_exists( 'rwmb_meta' ) ) {
+        // Meta Box core is active. The settings page comes from the extension,
+        // so check the admin menu for the item the theme asks it to register.
+        global $menu;
+        $pages = prefix_options_page( array() );
+        $title = $pages[0]['menu_title'];
+        foreach ( (array) $menu as $item ) {
+            if ( isset( $item[0] ) && $title === $item[0] ) {
+                return;
+            }
+        }
+        printf(
+            '<div class="notice notice-error"><p>%1$s</p><p>%2$s</p></div>',
+            sprintf(
+                /* translators: 1: name of the active theme, 2: title of the settings page. */
+                esc_html__( '%1$s could not register its "%2$s" page.', 'news-uams' ),
+                esc_html( wp_get_theme()->get( 'Name' ) ),
+                esc_html( $title )
+            ),
+            $extension_note
+        );
+        return;
+    }
+
     $file      = 'meta-box/meta-box.php';
     $admin_url = is_multisite() ? 'network_admin_url' : 'admin_url';
     $installed = array_key_exists( $file, get_plugins() );
@@ -274,11 +305,7 @@ function uams_news_meta_box_notice() {
         ),
         esc_url( $action_url ),
         esc_html( $action_label ),
-        sprintf(
-            /* translators: %s: link to the Meta Box Settings Page extension. */
-            esc_html__( 'The theme\'s settings page also needs the Meta Box Settings Page extension, which is not on wordpress.org: %s.', 'news-uams' ),
-            '<a href="https://metabox.io/plugins/mb-settings-page/">metabox.io</a>'
-        )
+        $extension_note
     );
 }
 
