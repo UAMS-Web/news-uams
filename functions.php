@@ -267,7 +267,11 @@ function uams_news_meta_box_notice() {
 
     printf(
         '<div class="notice notice-error"><p>%1$s <a href="%2$s">%3$s</a></p><p>%4$s</p></div>',
-        esc_html__( 'The News theme requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated.', 'news-uams' ),
+        sprintf(
+            /* translators: %s: name of the active theme. */
+            esc_html__( '%s requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated.', 'news-uams' ),
+            esc_html( wp_get_theme()->get( 'Name' ) )
+        ),
         esc_url( $action_url ),
         esc_html( $action_label ),
         sprintf(
