@@ -240,10 +240,12 @@ function get_uams_breadcrumbs()
   }
 
 /**
- * Warn administrators when the Meta Box plugin is missing.
+ * Warn administrators when Meta Box, or an extension the theme uses, is missing.
  *
  * The theme reads its settings and term images through rwmb_meta() and
  * registers its fields on the rwmb_meta_boxes and mb_settings_pages filters.
+ * Two extensions that are not on wordpress.org supply the settings page
+ * (MB Settings Page) and the category field (MB Term Meta).
  */
 add_action( 'admin_notices', 'uams_news_meta_box_notice' );
 function uams_news_meta_box_notice() {
@@ -251,62 +253,77 @@ function uams_news_meta_box_notice() {
         return;
     }
 
-    $extension_note = sprintf(
-        /* translators: %s: link to the Meta Box Settings Page extension. */
-        esc_html__( 'The theme\'s settings page needs the Meta Box Settings Page extension, which is not on wordpress.org: %s.', 'news-uams' ),
-        '<a href="https://metabox.io/plugins/mb-settings-page/">metabox.io</a>'
-    );
+    $extensions = array();
 
-    if ( function_exists( 'rwmb_meta' ) ) {
-        // Meta Box core is active. The settings page comes from the extension,
-        // so check the admin menu for the item the theme asks it to register.
-        global $menu;
-        $pages = prefix_options_page( array() );
-        $title = $pages[0]['menu_title'];
-        foreach ( (array) $menu as $item ) {
-            if ( isset( $item[0] ) && $title === $item[0] ) {
-                return;
-            }
+    // The settings page comes from MB Settings Page: look for the admin menu
+    // item the theme asks it to register.
+    global $menu;
+    $pages = prefix_options_page( array() );
+    $title = $pages[0]['menu_title'];
+    $found = false;
+    foreach ( (array) $menu as $item ) {
+        if ( isset( $item[0] ) && $title === $item[0] ) {
+            $found = true;
+            break;
         }
-        printf(
-            '<div class="notice notice-error"><p>%1$s</p><p>%2$s</p></div>',
-            sprintf(
-                /* translators: 1: name of the active theme, 2: title of the settings page. */
-                esc_html__( '%1$s could not register its "%2$s" page.', 'news-uams' ),
-                esc_html( wp_get_theme()->get( 'Name' ) ),
-                esc_html( $title )
-            ),
-            $extension_note
+    }
+    if ( ! $found ) {
+        $extensions['mb-settings-page'] = sprintf(
+            /* translators: %s: title of the settings page. */
+            __( 'MB Settings Page (the "%s" page)', 'news-uams' ),
+            $title
         );
+    }
+
+    // The category image field comes from MB Term Meta.
+    if ( ! function_exists( 'mb_term_meta_load' ) && ! class_exists( 'MBTM\Loader' ) ) {
+        $extensions['mb-term-meta'] = __( 'MB Term Meta (the category image field)', 'news-uams' );
+    }
+
+    $theme = esc_html( wp_get_theme()->get( 'Name' ) );
+
+    if ( ! function_exists( 'rwmb_meta' ) ) {
+        $file      = 'meta-box/meta-box.php';
+        $admin_url = is_multisite() ? 'network_admin_url' : 'admin_url';
+        $installed = array_key_exists( $file, get_plugins() );
+
+        if ( $installed ) {
+            $action_url   = wp_nonce_url( call_user_func( $admin_url, 'plugins.php?action=activate&plugin=' . rawurlencode( $file ) ), 'activate-plugin_' . $file );
+            $action_label = __( 'Activate Meta Box', 'news-uams' );
+        } elseif ( current_user_can( 'install_plugins' ) ) {
+            $action_url   = wp_nonce_url( call_user_func( $admin_url, 'update.php?action=install-plugin&plugin=meta-box' ), 'install-plugin_meta-box' );
+            $action_label = __( 'Install Meta Box', 'news-uams' );
+        } else {
+            $action_url   = 'https://wordpress.org/plugins/meta-box/';
+            $action_label = __( 'Get Meta Box', 'news-uams' );
+        }
+
+        $message = sprintf(
+            /* translators: %s: name of the active theme. */
+            esc_html__( '%s requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated.', 'news-uams' ),
+            $theme
+        ) . ' <a href="' . esc_url( $action_url ) . '">' . esc_html( $action_label ) . '</a>';
+    } elseif ( $extensions ) {
+        $message = sprintf(
+            /* translators: %s: name of the active theme. */
+            esc_html__( '%s is missing a Meta Box extension, so part of it will not work.', 'news-uams' ),
+            $theme
+        );
+    } else {
         return;
     }
 
-    $file      = 'meta-box/meta-box.php';
-    $admin_url = is_multisite() ? 'network_admin_url' : 'admin_url';
-    $installed = array_key_exists( $file, get_plugins() );
-
-    if ( $installed && current_user_can( 'activate_plugins' ) ) {
-        $action_url   = wp_nonce_url( call_user_func( $admin_url, 'plugins.php?action=activate&plugin=' . rawurlencode( $file ) ), 'activate-plugin_' . $file );
-        $action_label = __( 'Activate Meta Box', 'news-uams' );
-    } elseif ( ! $installed && current_user_can( 'install_plugins' ) ) {
-        $action_url   = wp_nonce_url( call_user_func( $admin_url, 'update.php?action=install-plugin&plugin=meta-box' ), 'install-plugin_meta-box' );
-        $action_label = __( 'Install Meta Box', 'news-uams' );
-    } else {
-        $action_url   = 'https://wordpress.org/plugins/meta-box/';
-        $action_label = __( 'Get Meta Box', 'news-uams' );
+    $note = '';
+    if ( $extensions ) {
+        $note = '<p>' . sprintf(
+            /* translators: %s: list of missing extensions. */
+            esc_html__( 'Also needed, and not available on wordpress.org: %s. Download them from %s.', 'news-uams' ),
+            esc_html( implode( ', ', $extensions ) ),
+            '<a href="https://metabox.io/plugins/">metabox.io</a>'
+        ) . '</p>';
     }
 
-    printf(
-        '<div class="notice notice-error"><p>%1$s <a href="%2$s">%3$s</a></p><p>%4$s</p></div>',
-        sprintf(
-            /* translators: %s: name of the active theme. */
-            esc_html__( '%s requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated.', 'news-uams' ),
-            esc_html( wp_get_theme()->get( 'Name' ) )
-        ),
-        esc_url( $action_url ),
-        esc_html( $action_label ),
-        $extension_note
-    );
+    printf( '<div class="notice notice-error"><p>%s</p>%s</div>', $message, $note );
 }
 
 function get_uams_boilerplate() {
