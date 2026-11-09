@@ -58,6 +58,7 @@
           // Start the Loop.
           $spotlight_posts = new WP_Query( array(
             'posts_per_page' => 10,
+            'category_name' => 'health',
             'paged' => $paged,
             'post__not_in' => $do_not_duplicate )
           );

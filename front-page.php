@@ -177,7 +177,6 @@
           );
 
           if ( $announce_posts->have_posts() ) : ?>
-          <script><?php print_r( exclude_id_list() ); ?></script>
             <ul>
 
            <?php while ( $announce_posts->have_posts() ) : $announce_posts->the_post();
@@ -244,7 +243,7 @@
             </div>
             <div class="col-md-4">
               <!-- Video -->
-              <h3>Youtube</h3>
+              <h3>YouTube</h3>
               <iframe width="400" height="300" src="https://www.youtube.com/embed/videoseries?list=PL046D8DC766672966" frameborder="0" allowfullscreen></iframe>
             </div>
           </div><!-- .row -->
