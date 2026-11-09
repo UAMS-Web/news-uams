@@ -239,7 +239,31 @@ function get_uams_breadcrumbs()
     return "<nav class='uams-breadcrumbs' aria-label='breadcrumbs'><ul>$html</ul></nav>";
   }
 
+/**
+ * Warn administrators when the Meta Box plugin is missing.
+ *
+ * The theme reads its settings and term images through rwmb_meta() and
+ * registers its fields on the rwmb_meta_boxes and mb_settings_pages filters.
+ */
+add_action( 'admin_notices', 'uams_news_meta_box_notice' );
+function uams_news_meta_box_notice() {
+    if ( function_exists( 'rwmb_meta' ) || ! current_user_can( 'activate_plugins' ) ) {
+        return;
+    }
+    printf(
+        '<div class="notice notice-error"><p>%s</p></div>',
+        sprintf(
+            /* translators: %s: link to the Plugins screen. */
+            esc_html__( 'The News theme requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated on the %s screen.', 'news-uams' ),
+            '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">' . esc_html__( 'Plugins', 'news-uams' ) . '</a>'
+        )
+    );
+}
+
 function get_uams_boilerplate() {
+	if ( ! function_exists( 'rwmb_meta' ) ) {
+		return '';
+	}
 	$content = rwmb_meta( 'boilerplate_html', array( 'object_type' => 'setting' ), 'uamswp_news' );
     return $content;
 }
@@ -292,6 +316,10 @@ function uams_options_meta_boxes( $meta_boxes ) {
 }
 
 function exclude_id_list() {
+    $value = array();
+    if ( ! function_exists( 'rwmb_meta' ) ) {
+        return $value;
+    }
     $terms =  rwmb_meta( 'exclude_cat', array( 'object_type' => 'setting' ), 'uamswp_news' );
         if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
             foreach ( $terms as $term ) {
