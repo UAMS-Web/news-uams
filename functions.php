@@ -250,15 +250,29 @@ function uams_news_meta_box_notice() {
     if ( function_exists( 'rwmb_meta' ) || ! current_user_can( 'activate_plugins' ) ) {
         return;
     }
-    $install_url = current_user_can( 'install_plugins' )
-        ? ( is_multisite() ? network_admin_url( 'plugin-install.php?s=meta-box&tab=search&type=term' ) : admin_url( 'plugin-install.php?s=meta-box&tab=search&type=term' ) )
-        : 'https://wordpress.org/plugins/meta-box/';
+    $file      = 'meta-box/meta-box.php';
+    $admin_url = is_multisite() ? 'network_admin_url' : 'admin_url';
+    $installed = array_key_exists( $file, get_plugins() );
+
+    if ( $installed && current_user_can( 'activate_plugins' ) ) {
+        $action_url   = wp_nonce_url( call_user_func( $admin_url, 'plugins.php?action=activate&plugin=' . rawurlencode( $file ) ), 'activate-plugin_' . $file );
+        $action_label = __( 'Activate Meta Box', 'news-uams' );
+    } elseif ( ! $installed && current_user_can( 'install_plugins' ) ) {
+        $action_url   = wp_nonce_url( call_user_func( $admin_url, 'update.php?action=install-plugin&plugin=meta-box' ), 'install-plugin_meta-box' );
+        $action_label = __( 'Install Meta Box', 'news-uams' );
+    } else {
+        $action_url   = 'https://wordpress.org/plugins/meta-box/';
+        $action_label = __( 'Get Meta Box', 'news-uams' );
+    }
+
     printf(
-        '<div class="notice notice-error"><p>%s</p></div>',
+        '<div class="notice notice-error"><p>%1$s <a href="%2$s">%3$s</a></p><p>%4$s</p></div>',
+        esc_html__( 'The News theme requires the Meta Box plugin, which is not active. Settings and category images will not load until it is activated.', 'news-uams' ),
+        esc_url( $action_url ),
+        esc_html( $action_label ),
         sprintf(
-            /* translators: 1: link to install or download Meta Box, 2: link to the Meta Box extensions page. */
-            esc_html__( 'The News theme requires the %1$s plugin, which is not active. Settings and category images will not load until it is installed and activated. The theme\'s settings page also needs the Meta Box Settings Page extension (%2$s).', 'news-uams' ),
-            '<a href="' . esc_url( $install_url ) . '">Meta Box</a>',
+            /* translators: %s: link to the Meta Box Settings Page extension. */
+            esc_html__( 'The theme\'s settings page also needs the Meta Box Settings Page extension, which is not on wordpress.org: %s.', 'news-uams' ),
             '<a href="https://metabox.io/plugins/mb-settings-page/">metabox.io</a>'
         )
     );
