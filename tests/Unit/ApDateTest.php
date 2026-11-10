@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * ap_date(), the Associated Press style date used in the REST output.
+ *
+ * @see functions.php
+ */
+
+declare(strict_types=1);
+
+it('abbreviates the months the way AP style does', function (string $date, string $expected): void {
+    expect(ap_date($date))->toBe($expected);
+})->with([
+    'January abbreviates' => ['2026-01-05', 'Jan. 5, 2026'],
+    'March is spelled out' => ['2026-03-09', 'March 9, 2026'],
+    'September is Sept.' => ['2026-09-30', 'Sept. 30, 2026'],
+    'November abbreviates' => ['2026-11-09', 'Nov. 9, 2026'],
+    'December abbreviates' => ['2026-12-31', 'Dec. 31, 2026'],
+]);
+
+it('drops the leading zero from the day', function (): void {
+    expect(ap_date('2026-05-02'))->toBe('May 2, 2026');
+});
