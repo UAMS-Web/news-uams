@@ -3,39 +3,83 @@
 /**
  * Unit bootstrap for the theme.
  *
- * Loads functions.php, which the theme cannot avoid, inside one Brain Monkey
- * session with what it calls at file scope stubbed. The functions it defines
- * outlive the session; the hooks it registered are discarded by tearDown(), so
- * every test starts clean.
+ * Loads Composer and Patchwork, defines ABSPATH and declares the WordPress classes the tests
+ * touch. functions.php is not loaded here: tests/Pest.php loads it from the first test's setup,
+ * so that what the file does at include time happens inside a test and is covered by it.
  */
 
 declare(strict_types=1);
-
-use function Brain\Monkey\Functions\stubEscapeFunctions;
-use function Brain\Monkey\Functions\stubTranslationFunctions;
-use function Brain\Monkey\Functions\when;
-use function Brain\Monkey\setUp;
-use function Brain\Monkey\tearDown;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 require_once __DIR__.'/../vendor/antecedent/patchwork/Patchwork.php';
 
+require_once __DIR__.'/QueryLog.php';
+
 if (! defined('ABSPATH')) {
     define('ABSPATH', sys_get_temp_dir().'/news-uams-tests-no-wordpress/');
 }
 
-setUp();
+/*
+ * The WordPress classes the theme and its tests touch, declared by hand because WordPress is not
+ * loaded. They are evaluated rather than declared so that static analysis keeps reading the real
+ * ones from the WordPress stubs.
+ */
+eval(<<<'PHP'
+class WP_Error
+{
+    public function __construct(public string $code = '', public string $message = '') {}
+}
 
-stubTranslationFunctions();
-stubEscapeFunctions();
-when('get_template_directory')->justReturn(dirname(__DIR__));
-when('get_stylesheet_directory')->justReturn(dirname(__DIR__));
-when('add_image_size')->justReturn();
-when('register_post_status')->justReturn();
+/**
+ * A WP_Query that serves the posts a test queues, in the order the template asks for them.
+ *
+ * Queue one list of posts per query with QueryLog::$queue; every query the template builds shifts
+ * the next list off it and records its arguments in QueryLog::$received.
+ */
+class WP_Query
+{
+    /** @var list<object> */
+    public array $posts = [];
 
-require_once __DIR__.'/../functions.php';
+    public int $current_post = -1;
 
-tearDown();
+    /** @param array<string, mixed> $args */
+    public function __construct(array $args = [])
+    {
+        QueryLog::$received[] = $args;
+        $this->posts = array_shift(QueryLog::$queue) ?? [];
+    }
 
-// cspell:ignore ABSPATH stylesheet
+    public function have_posts(): bool
+    {
+        if ($this->current_post + 1 < count($this->posts)) {
+            return true;
+        }
+
+        $this->current_post = -1;
+
+        return false;
+    }
+
+    public function the_post(): void
+    {
+        $this->current_post++;
+        $GLOBALS['post'] = $this->posts[$this->current_post];
+    }
+
+    public function next_post(): object
+    {
+        $this->current_post++;
+
+        return $this->posts[$this->current_post];
+    }
+}
+
+class UAMS_Sidebar
+{
+    public const ID = 'sidebar';
+}
+PHP);
+
+// cspell:ignore ABSPATH

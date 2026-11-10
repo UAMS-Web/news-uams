@@ -3,12 +3,6 @@
 * Add an automatic default custom taxonomy for calendar.
 * If no event (taxonomy) is set, the event will be sorted as “draft” and won’t return an offset error.
 */
-
-// Fix ACF Support
-add_filter('_includes/acf-pro/settings/show_admin', '__return_true');
-
-add_action('acf/input/admin_head', 'my_acf_admin_head');
-
 function my_acf_admin_head(): void
 {
 
@@ -226,7 +220,6 @@ function get_uams_breadcrumbs(): string
  * not activated (an Activate link), or not installed (an Install link for
  * Meta Box, a download link and an upload link for the extensions).
  */
-add_action('admin_notices', 'uams_news_meta_box_notice');
 function uams_news_meta_box_notice(): void
 {
     if (! current_user_can('activate_plugins')) {
@@ -330,7 +323,6 @@ function get_uams_boilerplate()
 
     return rwmb_meta('boilerplate_html', ['object_type' => 'setting'], 'uamswp_news');
 }
-add_filter('mb_settings_pages', 'prefix_options_page');
 function prefix_options_page($settings_pages)
 {
     $settings_pages[] = [
@@ -344,8 +336,6 @@ function prefix_options_page($settings_pages)
     return $settings_pages;
 }
 
-// Register meta boxes and fields for settings page
-add_filter('rwmb_meta_boxes', 'uams_options_meta_boxes');
 function uams_options_meta_boxes($meta_boxes)
 {
     $meta_boxes[] = [
@@ -400,7 +390,6 @@ function exclude_id_list(): array
     return $value;
 }
 
-add_filter('rwmb_meta_boxes', 'uams_news_meta_boxes');
 function uams_news_meta_boxes($meta_boxes)
 {
     $meta_boxes[] = [
@@ -459,9 +448,6 @@ function uams_news_meta_boxes($meta_boxes)
     return $meta_boxes;
 }
 
-add_filter('manage_posts_columns', 'add_img_column');
-add_filter('manage_posts_custom_column', 'manage_img_column', 5, 2);
-
 /**
  * @return mixed[]
  */
@@ -503,36 +489,6 @@ function manage_img_column($column_name, $post_id)
 // }
 // add_filter( 'excerpt_length', 'wpdocs_custom_excerpt_length', 999 );
 
-/* Add Custom Image Sizes */
-add_image_size('news-full', 960, 540, true);
-add_image_size('news-half', 560, 315, true);
-add_image_size('news-third', 400, 225, true);
-add_image_size('news-quarter', 320, 180, true);
-add_image_size('uams_news', 560, 350, true); // 16x10 format cropped
-
-// UAMS 2020 Sizes
-add_image_size('aspect-16-9', 1024, 576, true);
-add_image_size('aspect-16-9-small', 512, 288, true);
-
-register_post_status('convert', [
-    /* WordPress built in arguments. */
-    'label' => __('Convert', 'wp-statuses'),
-    'label_count' => _n_noop('To Convert <span class="count">(%s)</span>', 'To Convert <span class="count">(%s)</span>', 'wp-statuses'),
-    'public' => false,
-    'show_in_admin_all_list' => false,
-    'show_in_admin_status_list' => true,
-
-    /* WP Statuses specific arguments. */
-    'post_type' => ['post', 'page'], // Only for posts!
-    'show_in_metabox_dropdown' => true,
-    'show_in_inline_dropdown' => true,
-    'show_in_press_this_dropdown' => true,
-    'labels' => [
-        'metabox_dropdown' => __('To Be Converted', 'wp-statuses'),
-        'inline_dropdown' => __('To Convert', 'wp-statuses'),
-    ],
-    'dashicon' => 'dashicons-yes',
-]);
 function ap_date($string_date): string
 {
     $ap_dates = [
@@ -546,7 +502,6 @@ function ap_date($string_date): string
            date('Y', strtotime($string_date));
 }
 
-add_action('rest_api_init', 'uamswp_register_api_hooks');
 function uamswp_register_api_hooks(): void
 {
 
@@ -575,8 +530,6 @@ function uamswp_return_full_content($object)
 
     return $fullcontent;
 }
-
-add_action('rest_api_init', 'create_api_posts_meta_field');
 
 function create_api_posts_meta_field(): void
 {
@@ -623,9 +576,6 @@ function get_post_meta_for_api($object): array
 
     return $meta;
 }
-// Add post category title
-add_action('rest_api_init', 'create_api_posts_category');
-
 function create_api_posts_category(): void
 {
 
@@ -655,4 +605,83 @@ function uamswp_before_after($content)
 
     return $content;
 }
-add_filter('the_content', 'uamswp_before_after');
+
+/**
+ * Cut a title to at most `$length` characters, at a space, for the mobile sidebar button.
+ *
+ * Moved here from content-post.php, which declared it each time the template was included.
+ */
+function text_cut($text, $length, $dots): string
+{
+    // $text =get_the_title();
+    $text = trim(preg_replace('#[\s\n\r\t]{2,}#', ' ', $text));
+    $text_temp = $text;
+    while (substr($text, $length, 1) !== ' ') {
+        $length--;
+        if ($length > strlen($text)) {
+            break;
+        }
+    }
+    $text = substr($text, 0, $length);
+
+    return $text.(($dots == true && $text !== '' && strlen($text_temp) > $length) ? '...' : '');
+}
+
+/**
+ * Register the theme's hooks, image sizes and post status.
+ *
+ * Called once, at the foot of this file, as WordPress includes it. It is a function so that a
+ * test can run the registration again with the WordPress functions mocked.
+ */
+function uams_news_register(): void
+{
+    // Fix ACF Support
+    add_filter('_includes/acf-pro/settings/show_admin', '__return_true');
+    add_action('acf/input/admin_head', 'my_acf_admin_head');
+    add_action('admin_notices', 'uams_news_meta_box_notice');
+    add_filter('mb_settings_pages', 'prefix_options_page');
+    // Register meta boxes and fields for settings page
+    add_filter('rwmb_meta_boxes', 'uams_options_meta_boxes');
+    add_filter('rwmb_meta_boxes', 'uams_news_meta_boxes');
+    add_filter('manage_posts_columns', 'add_img_column');
+    add_filter('manage_posts_custom_column', 'manage_img_column', 5, 2);
+
+    /* Add Custom Image Sizes */
+    add_image_size('news-full', 960, 540, true);
+    add_image_size('news-half', 560, 315, true);
+    add_image_size('news-third', 400, 225, true);
+    add_image_size('news-quarter', 320, 180, true);
+    add_image_size('uams_news', 560, 350, true); // 16x10 format cropped
+
+    // UAMS 2020 Sizes
+    add_image_size('aspect-16-9', 1024, 576, true);
+    add_image_size('aspect-16-9-small', 512, 288, true);
+
+    register_post_status('convert', [
+        /* WordPress built in arguments. */
+        'label' => __('Convert', 'wp-statuses'),
+        'label_count' => _n_noop('To Convert <span class="count">(%s)</span>', 'To Convert <span class="count">(%s)</span>', 'wp-statuses'),
+        'public' => false,
+        'show_in_admin_all_list' => false,
+        'show_in_admin_status_list' => true,
+
+        /* WP Statuses specific arguments. */
+        'post_type' => ['post', 'page'], // Only for posts!
+        'show_in_metabox_dropdown' => true,
+        'show_in_inline_dropdown' => true,
+        'show_in_press_this_dropdown' => true,
+        'labels' => [
+            'metabox_dropdown' => __('To Be Converted', 'wp-statuses'),
+            'inline_dropdown' => __('To Convert', 'wp-statuses'),
+        ],
+        'dashicon' => 'dashicons-yes',
+    ]);
+
+    add_action('rest_api_init', 'uamswp_register_api_hooks');
+    add_action('rest_api_init', 'create_api_posts_meta_field');
+    // Add post category title
+    add_action('rest_api_init', 'create_api_posts_category');
+    add_filter('the_content', 'uamswp_before_after');
+}
+
+uams_news_register();

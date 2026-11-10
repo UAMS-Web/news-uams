@@ -18,7 +18,18 @@
     </testsuites>
     <source>
         <include>
+            <file>./category-education-research-feature.php</file>
+            <file>./category-health.php</file>
+            <file>./category-heres-to-your-health.php</file>
+            <file>./category-news-release.php</file>
+            <file>./category-patient-stories.php</file>
+            <file>./category-university.php</file>
+            <file>./content-post.php</file>
+            <file>./content.php</file>
+            <file>./front-page.php</file>
             <file>./functions.php</file>
+            <file>./sidebar.php</file>
+            <file>./thinstrip.php</file>
         </include>
     </source>
 </phpunit>
