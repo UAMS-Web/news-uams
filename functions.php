@@ -9,7 +9,7 @@ add_filter('_includes/acf-pro/settings/show_admin', '__return_true');
 
 add_action('acf/input/admin_head', 'my_acf_admin_head');
 
-function my_acf_admin_head()
+function my_acf_admin_head(): void
 {
 
     ?>
@@ -59,7 +59,7 @@ function my_customize_rest_cors() {
 add_action( 'rest_api_init', 'my_customize_rest_cors', 15 );
 */
 
-function uams_primary_post_category()
+function uams_primary_post_category(): string
 {
 
     // if ( function_exists('pricat_get_categories') ) { // if Primary Category is active.
@@ -78,32 +78,23 @@ function uams_primary_post_category()
 
         $cat_link = get_category_link($term);
 
-        $cat = '<a href="'.$cat_link.'" title="'.$cat_name.'">'.$cat_name.'</a>';
+        return '<a href="'.$cat_link.'" title="'.$cat_name.'">'.$cat_name.'</a>';
 
-        return $cat;
-
-    } else { // return first category
-        $categories = get_the_category();
-
-        // Do nothing if there are no categories.
-        if (! $categories) {
-            return '';
-        }
-
-        $i = 0;
-
-        if ($categories[$i]->term_id == '13') { // "Featured" category, 5 on live
-            $i++;
-        }
-
-        $cat_name = esc_html($categories[$i]->name);
-
-        $cat_link = get_category_link($categories[$i]->term_id);
-
-        $cat = '<a href="'.$cat_link.'" title="'.$cat_name.'">'.$cat_name.'</a>';
-
-        return $cat;
     }
+    // return first category
+    $categories = get_the_category();
+    // Do nothing if there are no categories.
+    if (! $categories) {
+        return '';
+    }
+    $i = 0;
+    if ($categories[$i]->term_id == '13') { // "Featured" category, 5 on live
+        $i++;
+    }
+    $cat_name = esc_html($categories[$i]->name);
+    $cat_link = get_category_link($categories[$i]->term_id);
+
+    return '<a href="'.$cat_link.'" title="'.$cat_name.'">'.$cat_name.'</a>';
 
     // } else { //return first category
     //     $categories = get_the_category();
@@ -130,7 +121,7 @@ function uams_primary_post_category()
 
 }
 
-function get_uams_breadcrumbs()
+function get_uams_breadcrumbs(): string
 {
 
     global $post;
@@ -206,7 +197,7 @@ function get_uams_breadcrumbs()
 
         if (! is_front_page()) {
             foreach (array_filter($ancestors) as $index => $ancestor) {
-                $class = $index + 1 == count($ancestors) ? ' class="current" ' : '';
+                $class = $index + 1 === count($ancestors) ? ' class="current" ' : '';
                 $page = get_post($ancestor);
                 $url = get_permalink($page->ID);
                 $title_attr = esc_attr($page->post_title);
@@ -236,7 +227,7 @@ function get_uams_breadcrumbs()
  * Meta Box, a download link and an upload link for the extensions).
  */
 add_action('admin_notices', 'uams_news_meta_box_notice');
-function uams_news_meta_box_notice()
+function uams_news_meta_box_notice(): void
 {
     if (! current_user_can('activate_plugins')) {
         return;
@@ -316,7 +307,7 @@ function uams_news_meta_box_notice()
         }
     }
 
-    if (! $items) {
+    if ($items === []) {
         return;
     }
 
@@ -336,9 +327,8 @@ function get_uams_boilerplate()
     if (! function_exists('rwmb_meta')) {
         return '';
     }
-    $content = rwmb_meta('boilerplate_html', ['object_type' => 'setting'], 'uamswp_news');
 
-    return $content;
+    return rwmb_meta('boilerplate_html', ['object_type' => 'setting'], 'uamswp_news');
 }
 add_filter('mb_settings_pages', 'prefix_options_page');
 function prefix_options_page($settings_pages)
@@ -391,7 +381,10 @@ function uams_options_meta_boxes($meta_boxes)
     return $meta_boxes;
 }
 
-function exclude_id_list()
+/**
+ * @return mixed[]
+ */
+function exclude_id_list(): array
 {
     $value = [];
     if (! function_exists('rwmb_meta')) {
@@ -469,7 +462,10 @@ function uams_news_meta_boxes($meta_boxes)
 add_filter('manage_posts_columns', 'add_img_column');
 add_filter('manage_posts_custom_column', 'manage_img_column', 5, 2);
 
-function add_img_column($column_array)
+/**
+ * @return mixed[]
+ */
+function add_img_column($column_array): array
 {
     // I want to add my column at the beginning, so I use array_slice()
     // in other cases $column_array['featured_image'] = 'Featured Image' will be enough
@@ -537,7 +533,7 @@ register_post_status('convert', [
     ],
     'dashicon' => 'dashicons-yes',
 ]);
-function ap_date($string_date)
+function ap_date($string_date): string
 {
     $ap_dates = [
         'Jan.', 'Feb.', 'March', 'April',
@@ -551,7 +547,7 @@ function ap_date($string_date)
 }
 
 add_action('rest_api_init', 'uamswp_register_api_hooks');
-function uamswp_register_api_hooks()
+function uamswp_register_api_hooks(): void
 {
 
     // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
@@ -574,7 +570,7 @@ function uamswp_return_full_content($object)
     $first_para_pos = strpos($content, '<p>');
     $fullcontent = substr_replace($content, $beforecontent, $first_para_pos + 3, 0);
     if ($includeboiler == '1') {
-        $fullcontent = $fullcontent.$boiler;
+        $fullcontent .= $boiler;
     }
 
     return $fullcontent;
@@ -582,7 +578,7 @@ function uamswp_return_full_content($object)
 
 add_action('rest_api_init', 'create_api_posts_meta_field');
 
-function create_api_posts_meta_field()
+function create_api_posts_meta_field(): void
 {
 
     // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
@@ -598,7 +594,7 @@ function create_api_posts_meta_field()
  * The posts endpoint answers anonymous requests, so this list is the whole surface: add a key
  * only when a consumer reads it, and never a `_`-prefixed (protected) key.
  */
-function uamswp_api_post_meta_keys()
+function uamswp_api_post_meta_keys(): array
 {
     return [
         'include_boilerplate',
@@ -608,7 +604,10 @@ function uamswp_api_post_meta_keys()
     ];
 }
 
-function get_post_meta_for_api($object)
+/**
+ * @return mixed[]
+ */
+function get_post_meta_for_api($object): array
 {
     // get the id of the post object array
     $post_id = $object['id'];
@@ -627,7 +626,7 @@ function get_post_meta_for_api($object)
 // Add post category title
 add_action('rest_api_init', 'create_api_posts_category');
 
-function create_api_posts_category()
+function create_api_posts_category(): void
 {
 
     // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
@@ -650,11 +649,10 @@ function uamswp_before_after($content)
         $beforecontent = '<span class="entrydate"><time datetime="'.get_the_date('c').'" itemprop="datePublished">'.ap_date(get_the_date()).'</time><span> | ';
         $aftercontent = '';
         $first_para_pos = strpos($content, '<p>');
-        $fullcontent = substr_replace($content, $beforecontent, $first_para_pos + 3, 0);
-    } else {
-        $fullcontent = $content;
+
+        return substr_replace($content, $beforecontent, $first_para_pos + 3, 0);
     }
 
-    return $fullcontent;
+    return $content;
 }
 add_filter('the_content', 'uamswp_before_after');
