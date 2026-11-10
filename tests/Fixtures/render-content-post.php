@@ -4,38 +4,14 @@
  * Renders content-post.php in a bare process and prints the markup.
  *
  * Loads functions.php first, as WordPress does, with the registration functions it calls at include
- * time replaced by no-ops, because the template calls text_cut() from there.
+ * time replaced by recorders (recorders.php), because the template calls text_cut() from there.
  *
  * Usage: php render-content-post.php <theme directory> <title> <include_boilerplate 0|1>
  */
 
 declare(strict_types=1);
 
-function add_filter(): bool
-{
-    return true;
-}
-
-function add_action(): bool
-{
-    return true;
-}
-
-function add_image_size(): void {}
-
-function register_post_status(): void {}
-
-function __(string $text): string
-{
-    return $text;
-}
-
-function _n_noop(string $single, string $plural): array
-{
-    return [$single, $plural];
-}
-
-define('ABSPATH', __DIR__);
+require __DIR__.'/recorders.php';
 
 require $argv[1].'/functions.php';
 
