@@ -14,6 +14,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 require_once __DIR__.'/../vendor/antecedent/patchwork/Patchwork.php';
 
+require_once __DIR__.'/QueryLog.php';
+
 if (! defined('ABSPATH')) {
     define('ABSPATH', sys_get_temp_dir().'/news-uams-tests-no-wordpress/');
 }
@@ -32,17 +34,11 @@ class WP_Error
 /**
  * A WP_Query that serves the posts a test queues, in the order the template asks for them.
  *
- * Queue one list of posts per query with WP_Query::$queue; every query the template builds shifts
- * the next list off it and records its arguments in WP_Query::$received.
+ * Queue one list of posts per query with QueryLog::$queue; every query the template builds shifts
+ * the next list off it and records its arguments in QueryLog::$received.
  */
 class WP_Query
 {
-    /** @var list<list<object>> */
-    public static array $queue = [];
-
-    /** @var list<array<string, mixed>> */
-    public static array $received = [];
-
     /** @var list<object> */
     public array $posts = [];
 
@@ -51,8 +47,8 @@ class WP_Query
     /** @param array<string, mixed> $args */
     public function __construct(array $args = [])
     {
-        self::$received[] = $args;
-        $this->posts = array_shift(self::$queue) ?? [];
+        QueryLog::$received[] = $args;
+        $this->posts = array_shift(QueryLog::$queue) ?? [];
     }
 
     public function have_posts(): bool

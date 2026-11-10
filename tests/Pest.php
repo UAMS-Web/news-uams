@@ -63,17 +63,31 @@ function hideFunctions(string ...$names): void
  * Include a template the way WordPress does and return what it printed.
  *
  * WordPress includes a template from inside load_template(), which declares the loop globals, so
- * `$post` reaches the template as a global. Line endings are normalized to LF so that a working
- * copy checked out with CRLF renders the same markup as one with LF.
+ * `$post` reaches the template as a global, and the query variables (`$paged` and the rest) are
+ * extracted into its scope. Line endings are normalized to LF so that a working copy checked out
+ * with CRLF renders the same markup as one with LF.
+ *
+ * @param  array<string, mixed>  $queryVars  The variables WordPress extracts from the main query.
  */
-function renderTemplate(string $file): string
+function renderTemplate(string $file, array $queryVars = []): string
 {
     global $post;
+
+    extract($queryVars, EXTR_SKIP);
 
     ob_start();
     include __DIR__.'/../'.$file;
 
     return str_replace("\r\n", "\n", (string) ob_get_clean());
+}
+
+/**
+ * Collapse every run of whitespace to one space and trim the ends, so markup is compared by its
+ * content and not by the indentation of the template that printed it.
+ */
+function squish(string $markup): string
+{
+    return trim((string) preg_replace('/\s+/', ' ', $markup));
 }
 
 /**
