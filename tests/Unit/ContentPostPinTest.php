@@ -3,9 +3,9 @@
 /**
  * content-post.php rendered the way WordPress includes it, in a bare process.
  *
- * The template declares text_cut() when it is included, so each render needs a process of its own
- * (tests/Fixtures/render-content-post.php). This test pins the output before text_cut() moves to
- * functions.php; the same expectations hold after.
+ * Each render runs in a bare process (tests/Fixtures/render-content-post.php) that loads
+ * functions.php and then the template, the way WordPress does. The expectations were written before
+ * text_cut() moved from the template into functions.php and held unchanged after the move.
  *
  * @see content-post.php
  */
@@ -19,7 +19,7 @@ function contentPostPinRender(string $title, bool $boilerplate): string
 {
     $command = escapeshellarg(PHP_BINARY).' '
         .escapeshellarg(__DIR__.'/../Fixtures/render-content-post.php').' '
-        .escapeshellarg(__DIR__.'/../../content-post.php').' '
+        .escapeshellarg(dirname(__DIR__, 2)).' '
         .escapeshellarg($title).' '
         .($boilerplate ? '1' : '0');
 
