@@ -8,3 +8,4 @@
 /phpstan.neon.dist export-ignore
 /pint.json export-ignore
 /phpstan-stubs.php export-ignore
+/.git-blame-ignore-revs export-ignore
