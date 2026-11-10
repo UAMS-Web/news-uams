@@ -12,8 +12,10 @@ name: CI
 #
 # Inputs to the call:
 # - `linux-only: true`: every shared job runs on ubuntu-latest.
-# - `mutate: false`: mutation testing is off until its own ticket, after coverage. It also skips the
-#   `mutate-ignore` job, which only matters where a mutation run reads the annotations.
+# - `mutate-paths`: the first-party PHP files at the theme root. A pull request or a push mutates only those it
+#   adds, changes or renames; a `workflow_dispatch` run mutates everything the `mutate` Composer script covers.
+#   A new first-party PHP file is added here, to the script's `--path` and to the `<source>` list in
+#   `phpunit.xml` in the same change.
 # - `pest-command: composer test:unit`: the theme has a Unit suite and no Integration suite.
 # - `download-archive: true`: fails when the GitHub download holds a file the theme does not run (the keep-list
 #   in `.gitattributes`; the `download-archive-check` skill). The chain's default command names
@@ -55,7 +57,7 @@ jobs:
     uses: UAMS-Web/uams-ci-workflows/.github/workflows/ci.yml@252cbbdb0bc4353b547cde7f4380299288f6ed7a
     with:
       linux-only: true
-      mutate: false
+      mutate-paths: functions.php thinstrip.php content.php content-post.php front-page.php sidebar.php category-education-research-feature.php category-health.php category-heres-to-your-health.php category-news-release.php category-patient-stories.php category-university.php
       pest-command: composer test:unit
       download-archive: true
       download-archive-command: node .claude/skills/download-archive-check/check-download-archive.mjs

@@ -28,6 +28,7 @@
         "stan": "phpstan analyse --no-progress --memory-limit=2G",
         "refactor": "rector",
         "refactor:sweep": "rector --clear-cache --config=rector-sweep.php",
+        "mutate": "pest --mutate --parallel --path=functions.php,thinstrip.php,content.php,content-post.php,front-page.php,sidebar.php,category-education-research-feature.php,category-health.php,category-heres-to-your-health.php,category-news-release.php,category-patient-stories.php,category-university.php",
         "test": [
             "@test:unit"
         ],
@@ -41,6 +42,7 @@
         "stan": "Run PHPStan static analysis.",
         "refactor": "Apply Rector (gating profile).",
         "refactor:sweep": "Apply Rector (sweep profile); review the diff.",
+        "mutate": "Run Pest mutation testing over the first-party PHP files.",
         "test": "Run the Pest unit suite.",
         "test:pint": "Check formatting with Pint without changing files.",
         "test:refactor": "Preview Rector (gating profile) without changing files.",
