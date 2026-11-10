@@ -71,6 +71,11 @@ parameters:
         - thinstrip.php
         - tests
 
+    # The fixtures run in child processes and declare stand-ins for WordPress functions with
+    # their own signatures, which would otherwise be read as the signatures the theme calls.
+    excludePaths:
+        - tests/Fixtures
+
     # The Integration suite's own Composer setup (the tests skill): its vendor/
     # sits inside `tests`, so it is excluded from analysis, under `analyse`
     # only, so its WordPress test classes can still be scanned below. Without
@@ -96,8 +101,11 @@ parameters:
     #     - tests/Integration/vendor/yoast/phpunit-polyfills/src
 
     # Symbols the child theme calls from the parent theme (uams-2016) and ACF.
+    # Patchwork's API (`redefine()`, `relay()`) is what tests/Pest.php uses to hide a function from
+    # function_exists().
     scanFiles:
         - phpstan-stubs.php
+        - vendor/antecedent/patchwork/Patchwork.php
 
     # WP-CLI: uncomment after `composer require --dev php-stubs/wp-cli-stubs`.
     # Paths are relative to this neon file (repository root). wordpress-stubs

@@ -34,7 +34,11 @@ function primaryCategoryRun(array $meta, array $categories): array
     when('is_wp_error')->alias(fn ($thing): bool => $thing instanceof WP_Error);
     when('get_category_link')->alias(fn ($term): string => 'https://example.test/category/'.(is_object($term) ? $term->term_id : $term).'/');
     when('get_term_by')->alias(
-        fn (string $field, $value): object|false => $value === 'news' ? (object) ['term_id' => 5, 'name' => 'News'] : false
+        fn (string $field, $value): object|false => match ($value) {
+            'news' => (object) ['term_id' => 5, 'name' => 'News'],
+            'news-amp' => (object) ['term_id' => 6, 'name' => 'R&D'],
+            default => false,
+        }
     );
     when('get_term')->alias(
         fn ($term) => $term === false ? new WP_Error('invalid_term', 'Empty Term.') : $term
@@ -54,12 +58,6 @@ function primaryCategoryRun(array $meta, array $categories): array
 
     return [$markup, $warnings];
 }
-
-beforeEach(function (): void {
-    if (! class_exists('WP_Error')) {
-        eval('class WP_Error { public function __construct(public string $code = "", public string $message = "") {} }');
-    }
-});
 
 it('links the primary category when the post has the meta', function (): void {
     [$markup] = primaryCategoryRun(['news'], [(object) ['term_id' => 9, 'name' => 'Other']]);
@@ -83,4 +81,45 @@ it('raises no warning for a post with no meta', function (): void {
     [, $warnings] = primaryCategoryRun([], [(object) ['term_id' => 9, 'name' => 'Other']]);
 
     expect($warnings)->toBe([]);
+});
+
+it('falls back to the first category when the primary category slug matches no term', function (): void {
+    [$markup] = primaryCategoryRun(['gone'], [(object) ['term_id' => 9, 'name' => 'Other']]);
+
+    expect($markup)->toBe('<a href="https://example.test/category/9/" title="Other">Other</a>');
+});
+
+it('skips the Featured category and links the next one', function (): void {
+    [$markup] = primaryCategoryRun([], [
+        (object) ['term_id' => 13, 'name' => 'Featured'],
+        (object) ['term_id' => 9, 'name' => 'Other'],
+    ]);
+
+    expect($markup)->toBe('<a href="https://example.test/category/9/" title="Other">Other</a>');
+});
+
+it('skips the Featured category when its id is a string', function (): void {
+    [$markup] = primaryCategoryRun([], [
+        (object) ['term_id' => '13', 'name' => 'Featured'],
+        (object) ['term_id' => 9, 'name' => 'Other'],
+    ]);
+
+    expect($markup)->toBe('<a href="https://example.test/category/9/" title="Other">Other</a>');
+});
+
+it('links the first category when it is not the Featured one', function (): void {
+    [$markup] = primaryCategoryRun([], [
+        (object) ['term_id' => 14, 'name' => 'First'],
+        (object) ['term_id' => 9, 'name' => 'Other'],
+    ]);
+
+    expect($markup)->toBe('<a href="https://example.test/category/14/" title="First">First</a>');
+});
+
+it('escapes the name of a fallback category but not the name of the primary category', function (): void {
+    [$fallback] = primaryCategoryRun([], [(object) ['term_id' => 9, 'name' => 'R&D']]);
+    [$primary] = primaryCategoryRun(['news-amp'], [(object) ['term_id' => 9, 'name' => 'Other']]);
+
+    expect($fallback)->toBe('<a href="https://example.test/category/9/" title="R&amp;D">R&amp;D</a>')
+        ->and($primary)->toBe('<a href="https://example.test/category/6/" title="R&D">R&D</a>');
 });

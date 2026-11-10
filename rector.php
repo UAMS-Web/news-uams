@@ -126,7 +126,12 @@ return RectorConfig::configure()
         __DIR__.'/functions.php',
         __DIR__.'/sidebar.php',
         __DIR__.'/thinstrip.php',
-        __DIR__.'/tests',
+        // Not tests/Fixtures: those files run in child processes and declare stand-ins for
+        // WordPress functions with their own signatures, which Rector would read as the
+        // signatures the theme calls.
+        __DIR__.'/tests/Pest.php',
+        __DIR__.'/tests/bootstrap.php',
+        __DIR__.'/tests/Unit',
     ])
     // WordPress plugins: also analyze the PHP files at the repository root (the
     // plugin header file). Uncomment for those.
