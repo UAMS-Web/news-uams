@@ -33,12 +33,17 @@ name: CI
 # by `lint-floor`.
 #
 # This theme uses a single-branch flow: an issue branch opens one pull request to `master`.
-# The workflow runs for every pull request, and for a push to `master`.
+# The workflow runs for every pull request, for a push to `master`, and once a week on a schedule.
 
 on:
   pull_request:
   push:
     branches: [master]
+  # The full mutation pass, weekly: Monday at 08:00 UTC, on the default branch. A scheduled run mutates everything
+  # the `mutate` Composer script covers, under the chain's `mutate-full-timeout-minutes` (default 180), where a
+  # pull request or a push mutates only changed files and keeps 45 minutes. It catches decay no pull request touches.
+  schedule:
+    - cron: '0 8 * * 1'
   # Lets the workflow be run on demand against a branch.
   workflow_dispatch:
 
