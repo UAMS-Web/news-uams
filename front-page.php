@@ -35,12 +35,12 @@ if ($featured_posts->have_posts()) {
         // Loop output goes here
         $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array
         ?>
-            <article class="card top <?php echo  $i == 1 ? 'med' : 'xs'; ?>">
+            <article class="card top <?php echo $i === 1 ? 'med' : 'xs'; ?>">
               <?php
            if (has_post_thumbnail()) { ?>
               <div class="card-image">
                 <?php
-            if ($i == 1) {
+            if ($i === 1) {
                 the_post_thumbnail('news-half');
             } else {
                 the_post_thumbnail('news-third');
@@ -124,7 +124,7 @@ if ($more_posts->have_posts()) {
     // var_dump ($more_posts);
     while ($more_posts->have_posts()) {
         $i++;
-        if (($i % 2) == 0) {
+        if ($i % 2 === 0) {
             $more_posts->next_post();
         } else {
             $more_posts->the_post();

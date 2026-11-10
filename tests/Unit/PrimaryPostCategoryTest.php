@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 use Brain\Monkey\Functions;
 
+use function Brain\Monkey\Functions\stubEscapeFunctions;
+use function Brain\Monkey\Functions\when;
+
 /**
  * Run the function with a warning handler attached.
  *
@@ -21,19 +24,19 @@ function primaryCategoryRun(array $meta, array $categories): array
 {
     $warnings = [];
 
-    Functions\stubEscapeFunctions();
-    Functions\when('get_the_ID')->justReturn(7);
+    stubEscapeFunctions();
+    when('get_the_ID')->justReturn(7);
     // Mirrors get_post_meta(): a list by default, the first value or '' when $single is true.
-    Functions\when('get_post_meta')->alias(
+    when('get_post_meta')->alias(
         fn (int $id, string $key = '', bool $single = false) => $single ? ($meta[0] ?? '') : $meta
     );
-    Functions\when('get_the_category')->justReturn($categories);
-    Functions\when('is_wp_error')->alias(fn ($thing): bool => $thing instanceof WP_Error);
-    Functions\when('get_category_link')->alias(fn ($term): string => 'https://example.test/category/'.(is_object($term) ? $term->term_id : $term).'/');
-    Functions\when('get_term_by')->alias(
+    when('get_the_category')->justReturn($categories);
+    when('is_wp_error')->alias(fn ($thing): bool => $thing instanceof WP_Error);
+    when('get_category_link')->alias(fn ($term): string => 'https://example.test/category/'.(is_object($term) ? $term->term_id : $term).'/');
+    when('get_term_by')->alias(
         fn (string $field, $value): object|false => $value === 'news' ? (object) ['term_id' => 5, 'name' => 'News'] : false
     );
-    Functions\when('get_term')->alias(
+    when('get_term')->alias(
         fn ($term) => $term === false ? new WP_Error('invalid_term', 'Empty Term.') : $term
     );
 
