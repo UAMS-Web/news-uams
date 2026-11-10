@@ -15,6 +15,9 @@ name: CI
 # - `mutate: false`: mutation testing is off until its own ticket, after coverage. It also skips the
 #   `mutate-ignore` job, which only matters where a mutation run reads the annotations.
 # - `pest-command: composer test:unit`: the theme has a Unit suite and no Integration suite.
+# - `download-archive: true`: fails when the GitHub download holds a file the theme does not run (the keep-list
+#   in `.gitattributes`; the `download-archive-check` skill). The chain's default command names
+#   `scripts/check-download-archive.mjs`, so the call passes the skill's script.
 #
 # The shared workflow is pinned to a commit (tag v0.10.0), so it takes a change when this file does.
 #
@@ -54,6 +57,8 @@ jobs:
       linux-only: true
       mutate: false
       pest-command: composer test:unit
+      download-archive: true
+      download-archive-command: node .claude/skills/download-archive-check/check-download-archive.mjs
 
   lint-floor:
     name: lint-floor

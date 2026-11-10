@@ -1,11 +1,18 @@
-/vendor/ export-ignore
-/tests/ export-ignore
-/phpunit.xml export-ignore
-/composer.json export-ignore
-/composer.lock export-ignore
-/rector.php export-ignore
-/rector-sweep.php export-ignore
-/phpstan.neon.dist export-ignore
-/pint.json export-ignore
-/phpstan-stubs.php export-ignore
-/.git-blame-ignore-revs export-ignore
+# A GitHub download holds only what the theme runs (keep-the-download-to-what-runs rule).
+# Every top-level entry is left out, then each path the theme runs is put back.
+/* export-ignore
+/.* export-ignore
+/style.css -export-ignore
+/screenshot.png -export-ignore
+/functions.php -export-ignore
+/thinstrip.php -export-ignore
+/content.php -export-ignore
+/content-post.php -export-ignore
+/front-page.php -export-ignore
+/sidebar.php -export-ignore
+/category-education-research-feature.php -export-ignore
+/category-health.php -export-ignore
+/category-heres-to-your-health.php -export-ignore
+/category-news-release.php -export-ignore
+/category-patient-stories.php -export-ignore
+/category-university.php -export-ignore
