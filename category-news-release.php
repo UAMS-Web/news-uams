@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<?php //get_template_part( 'header', 'image' ); ?>
+<?php // get_template_part( 'header', 'image' );?>
 
 <div class="container uams-body">
 
@@ -8,11 +8,11 @@
 
     <div class="uams-content col-md-8" role='main'>
 
-      <?php //uams_site_title(); ?>
+      <?php // uams_site_title();?>
 
-      <?php //get_template_part( 'menu', 'mobile' ); ?>
+      <?php // get_template_part( 'menu', 'mobile' );?>
 
-      <?php //get_template_part( 'breadcrumbs' ); ?>
+      <?php // get_template_part( 'breadcrumbs' );?>
 
       <div id='main_content' class="uams-body-copy" tabindex="-1">
       <h2>News Releases</h2>
@@ -82,73 +82,73 @@
             <ul class="archives">
             <?php
             // WP_Query arguments.
-            $args = array(
+            $args = [
                 'category_name' => 'news-release',
                 'posts_per_page' => -1,
                 'order' => 'DESC',
-            );
+            ];
 
-            // The Query.
-            $query = new WP_Query( $args );
+// The Query.
+$query = new WP_Query($args);
 
-            $year = '';
-		    $month = '';
+$year = '';
+$month = '';
 
-            // The Loop.
-            if ( $query->have_posts() ) {
+// The Loop.
+if ($query->have_posts()) {
 
-                while ( $query->have_posts() ) {
-                    $query->the_post();
+    while ($query->have_posts()) {
+        $query->the_post();
 
-                    if(ucfirst(get_the_time('F')) != $month && $month != ''){
-                        echo '</ul></li>';
-                    }
-                    if(get_the_time('Y') != $year && $year != ''){
-                        echo '</ul></li>';
-                    }
-                    if(get_the_time('Y') != $year){
-                        $year = get_the_time('Y');
-                        echo '<li><h2>' . $year . '</h2><ul class="monthly-archives">';
-                    }
-                    if(ucfirst(get_the_time('F')) != $month){
-                        $month = ucfirst(get_the_time('F'));
-                        echo '<li><h3>' . $month . '</h3><ul>';
-                    }
+        if (ucfirst(get_the_time('F')) != $month && $month != '') {
+            echo '</ul></li>';
+        }
+        if (get_the_time('Y') != $year && $year != '') {
+            echo '</ul></li>';
+        }
+        if (get_the_time('Y') != $year) {
+            $year = get_the_time('Y');
+            echo '<li><h2>'.$year.'</h2><ul class="monthly-archives">';
+        }
+        if (ucfirst(get_the_time('F')) != $month) {
+            $month = ucfirst(get_the_time('F'));
+            echo '<li><h3>'.$month.'</h3><ul>';
+        }
 
-                ?>
+        ?>
 
                     <li>
                         <span class="the_date"><?php the_time('d') ?>:</span>
                         <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
                     </li>
                 <?php
-                    // // current post's published date month.
-                    // $current_post_month = get_the_date( 'F' );
+            // // current post's published date month.
+            // $current_post_month = get_the_date( 'F' );
 
-                    // if ( 0 === $query->current_post ) { // for the oldest post, show the Month Year.
-                    //     echo '<h3 class="date">';
-                    //         the_date( 'F Y' );
-                    //     echo '</h3>';
-                    // } else { // for all other posts, get the month of the previous post in the loop.
-                    //     $p = $query->current_post - 1;
-                    //     $previous_post_month = mysql2date( 'F', $query->posts[ $p ]->post_date );
-                    // }
+            // if ( 0 === $query->current_post ) { // for the oldest post, show the Month Year.
+            //     echo '<h3 class="date">';
+            //         the_date( 'F Y' );
+            //     echo '</h3>';
+            // } else { // for all other posts, get the month of the previous post in the loop.
+            //     $p = $query->current_post - 1;
+            //     $previous_post_month = mysql2date( 'F', $query->posts[ $p ]->post_date );
+            // }
 
-                    // // if the current post's month does not match with that of the next one, show the Month Year.
-                    // if ( $previous_post_month !== $current_post_month ) {
-                    //     echo '</ul><h3 class="date">';
-                    //         the_date( 'F Y' );
-                    //     echo '</h3><ul>';
-                    // }
+            // // if the current post's month does not match with that of the next one, show the Month Year.
+            // if ( $previous_post_month !== $current_post_month ) {
+            //     echo '</ul><h3 class="date">';
+            //         the_date( 'F Y' );
+            //     echo '</h3><ul>';
+            // }
 
-                    // // show the linked title.
-                    // //printf( '<p><span class="the_date">%s:&nbsp;</span><a href="%s">%s</a></p>', get_the_time( 'd' ), esc_url( get_permalink() ), get_the_title() );
-                    // printf( '<li><a href="%s">%s</a></li>', esc_url( get_permalink() ), get_the_title() );
-                }
-                echo '</ul>';
-            } else {
-                // no posts found.
-            } ?>
+            // // show the linked title.
+            // //printf( '<p><span class="the_date">%s:&nbsp;</span><a href="%s">%s</a></p>', get_the_time( 'd' ), esc_url( get_permalink() ), get_the_title() );
+            // printf( '<li><a href="%s">%s</a></li>', esc_url( get_permalink() ), get_the_title() );
+    }
+    echo '</ul>';
+} else {
+    // no posts found.
+} ?>
           </section><!-- #spotlight -->
       </div>
 

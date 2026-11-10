@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<?php //get_template_part( 'header', 'image' ); ?>
+<?php // get_template_part( 'header', 'image' );?>
 
 <div class="container uams-body margin-bottom-none">
 
@@ -8,55 +8,59 @@
 
     <div class="uams-content col-md-12" role='main'>
 
-      <?php //uams_site_title(); ?>
+      <?php // uams_site_title();?>
 
-      <?php //get_template_part( 'menu', 'mobile' ); ?>
+      <?php // get_template_part( 'menu', 'mobile' );?>
 
-      <?php //get_template_part( 'breadcrumbs' ); ?>
+      <?php // get_template_part( 'breadcrumbs' );?>
 
       <div id='main_content' class="uams-body-copy" tabindex="-1">
 
         <section class="cards featured-grid margin-top-one">
         <?php
           // Posts already shown, so later sections can exclude them.
-          $do_not_duplicate = array();
+          $do_not_duplicate = [];
 
-          // Start the Loop.
-          $featured_posts = new WP_Query( array(
-            'posts_per_page' => 7, // One Big, six small
-            'category_name' => 'featured' )
-          );
-          $i=1;
+// Start the Loop.
+$featured_posts = new WP_Query(
+    [
+        'posts_per_page' => 7, // One Big, six small
+        'category_name' => 'featured']
+);
+$i = 1;
 
-          if ( $featured_posts->have_posts() ) : while ( $featured_posts->have_posts() ) : $featured_posts->the_post();
-              // Loop output goes here
-            $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array
-            ?>
-            <article class="card top <?php echo ( $i == 1 ? 'med' : 'xs' ); ?>">
+if ($featured_posts->have_posts()) {
+    while ($featured_posts->have_posts()) {
+        $featured_posts->the_post();
+        // Loop output goes here
+        $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array
+        ?>
+            <article class="card top <?php echo  $i == 1 ? 'med' : 'xs'; ?>">
               <?php
-               if ( has_post_thumbnail() ) : ?>
+           if (has_post_thumbnail()) { ?>
               <div class="card-image">
                 <?php
-                if ( $i == 1 ) {
-                  the_post_thumbnail( 'news-half' );
-                } else {
-                  the_post_thumbnail( 'news-third' );
-                }
-                ?>
+            if ($i == 1) {
+                the_post_thumbnail('news-half');
+            } else {
+                the_post_thumbnail('news-third');
+            }
+               ?>
               </div>
-              <?php endif; ?>
+              <?php } ?>
               <div class="card-stack">
                 <div class="card-content">
                   <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
+                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo get_the_excerpt(); ?></p>
                 </div>
                 <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
           <?php $i++; ?>
-        <?php  endwhile; endif; ?>
+        <?php }
+    } ?>
 
         </section>
         </br>
@@ -64,35 +68,39 @@
           <h2 class="text-center margin-top-quarter">University News</h2>
           <div class="inner-container cards">
             <?php
-          // Start the Loop.
-          $spotlight_posts = new WP_Query( array(
+    // Start the Loop.
+    $spotlight_posts = new WP_Query(
+        [
             'posts_per_page' => 3,
             'category__in' => 3852,
-            'post__not_in' => $do_not_duplicate )
-          );
+            'post__not_in' => $do_not_duplicate]
+    );
 
-          if ( $spotlight_posts->have_posts() ) : while ( $spotlight_posts->have_posts() ) : $spotlight_posts->the_post();
-              // Loop output goes here
-            ?>
+if ($spotlight_posts->have_posts()) {
+    while ($spotlight_posts->have_posts()) {
+        $spotlight_posts->the_post();
+        // Loop output goes here
+        ?>
             <article class="card top xs">
             <?php
-               if ( has_post_thumbnail() ) : ?>
+           if (has_post_thumbnail()) { ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'news-half' ); ?>
+                <?php the_post_thumbnail('news-half'); ?>
               </div>
-              <?php endif; ?>
+              <?php } ?>
               <div class="card-stack">
                 <div class="card-content">
                   <!-- <span class="primary-category"><?php echo uams_primary_post_category(); ?></span> -->
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
+                  <p><?php echo ap_date(get_the_date()) ?> | <?php echo get_the_excerpt(); ?></p>
                  </div>
                  <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
-            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array ?>
-            <?php  endwhile; endif; ?>
+            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array?>
+            <?php }
+    } ?>
 
 
           </div><!-- .inner-container -->
@@ -103,122 +111,139 @@
             <div class="col-md-4 cards">
               <!-- small cards News -->
               <?php
-          // Start the Loop.
-          $exclude_more_list = array("16885", "16883", "16878", "16894");
-          $more_posts = new WP_Query( array(
-              'posts_per_page' => 8,
-              'category__not_in' => array_merge( exclude_id_list(), $exclude_more_list), // Exclude inside articles
-              'post__not_in' => $do_not_duplicate )
-          );
-          $i=0;
-          if ($more_posts->have_posts()) :
-            //var_dump ($more_posts);
-          while($more_posts->have_posts()) : $i++;
-            if(($i % 2) == 0) : $more_posts->next_post(); else : $more_posts->the_post();
-              // Loop output goes here
+    // Start the Loop.
+    $exclude_more_list = ['16885', '16883', '16878', '16894'];
+$more_posts = new WP_Query(
+    [
+        'posts_per_page' => 8,
+        'category__not_in' => array_merge(exclude_id_list(), $exclude_more_list), // Exclude inside articles
+        'post__not_in' => $do_not_duplicate]
+);
+$i = 0;
+if ($more_posts->have_posts()) {
+    // var_dump ($more_posts);
+    while ($more_posts->have_posts()) {
+        $i++;
+        if (($i % 2) == 0) {
+            $more_posts->next_post();
+        } else {
+            $more_posts->the_post();
+            // Loop output goes here
             ?>
             <article class="card xs gray5">
             <?php
-               if ( has_post_thumbnail() ) : ?>
+               if (has_post_thumbnail()) { ?>
               <div class="card-image">
-                <?php the_post_thumbnail( 'news-third' ); ?>
+                <?php the_post_thumbnail('news-third'); ?>
               </div>
-              <?php endif; ?>
+              <?php } ?>
               <div class="card-stack">
                 <div class="card-content">
                   <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                   <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                   <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
+                   <p><?php echo ap_date(get_the_date()) ?> | <?php echo get_the_excerpt(); ?></p>
                 </div>
                 <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
               </div>
             </article>
 
-            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array ?>
-            <?php  endif; endwhile; ?>
+            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array?>
+            <?php }
+        } ?>
 
-            <?php $i = 0; rewind_posts(); ?>
+            <?php $i = 0;
+    rewind_posts(); ?>
 
             </div><!-- .col-md-4 -->
             <div class="col-md-4 cards">
             <?php
-            while($more_posts->have_posts()) : $i++;
-              if(($i % 2) !== 0) : $more_posts->next_post(); else : $more_posts->the_post();
-                // Loop output goes here
-              ?>
+    while ($more_posts->have_posts()) {
+        $i++;
+        if (($i % 2) !== 0) {
+            $more_posts->next_post();
+        } else {
+            $more_posts->the_post();
+            // Loop output goes here
+            ?>
               <article class="card xs  gray5">
               <?php
-               if ( has_post_thumbnail() ) : ?>
+             if (has_post_thumbnail()) { ?>
                 <div class="card-image">
-                  <?php the_post_thumbnail( 'news-third' ); ?>
+                  <?php the_post_thumbnail('news-third'); ?>
                 </div>
-              <?php endif; ?>
+              <?php } ?>
                 <div class="card-stack">
                   <div class="card-content">
                     <span class="primary-category"><?php echo uams_primary_post_category(); ?></span>
                     <h3><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></h3>
-                     <p><?php echo ap_date(get_the_date()) ?> | <?php echo(get_the_excerpt()); ?></p>
+                     <p><?php echo ap_date(get_the_date()) ?> | <?php echo get_the_excerpt(); ?></p>
                   </div>
                   <div class="card-action"><i class="fas fa-user-circle"></i> <?php the_author(); ?></div>
                 </div>
               </article>
 
-              <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array ?>
-              <?php  endif; endwhile; endif; ?>
+              <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array?>
+              <?php }
+        }
+} ?>
             </div><!-- .col-md-4 -->
             <div class="col-md-4">
               <!-- Text Col News -->
               <h3 class="margin-top-none">Announcements</h3>
               <?php
-          // Start the Loop.
-          $exclude_announce_list = array("16885", "16883");
-          $announce_posts = new WP_Query( array(
-              'posts_per_page' => 10,
-              'category_name' => 'announcements',
-              'category__not_in' => array_merge( exclude_id_list(), $exclude_announce_list), // Exclude inside articles
-              'post__not_in' => $do_not_duplicate )
-          );
+// Start the Loop.
+$exclude_announce_list = ['16885', '16883'];
+$announce_posts = new WP_Query(
+    [
+        'posts_per_page' => 10,
+        'category_name' => 'announcements',
+        'category__not_in' => array_merge(exclude_id_list(), $exclude_announce_list), // Exclude inside articles
+        'post__not_in' => $do_not_duplicate]
+);
 
-          if ( $announce_posts->have_posts() ) : ?>
+if ($announce_posts->have_posts()) { ?>
             <ul>
 
-           <?php while ( $announce_posts->have_posts() ) : $announce_posts->the_post();
-              // Loop output goes here
-            //if( $post->ID == $do_not_duplicate ) continue; // Add post to do not duplicate array
-            ?>
+           <?php while ($announce_posts->have_posts()) {
+               $announce_posts->the_post();
+               // Loop output goes here
+               // if( $post->ID == $do_not_duplicate ) continue; // Add post to do not duplicate array
+               ?>
             <li><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></li>
 
-            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array ?>
-            <?php  endwhile; ?>
+            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array?>
+            <?php } ?>
             </ul>
-            <?php endif; ?>
+            <?php } ?>
 
               <h3>Academic & Continuing Education Events</h3>
 <!--
               <?php
           // Start the Loop.
-          $college_posts = new WP_Query( array(
-              'posts_per_page' => 5,
-              'category_name' => 'academic-continuing-education-events',
-              'category__not_in' => exclude_id_list(), // Exclude inside articles
-              'post__not_in' => $do_not_duplicate )
+          $college_posts = new WP_Query(
+              [
+                  'posts_per_page' => 5,
+                  'category_name' => 'academic-continuing-education-events',
+                  'category__not_in' => exclude_id_list(), // Exclude inside articles
+                  'post__not_in' => $do_not_duplicate]
           );
 
-          if ( $college_posts->have_posts() ) : ?>
+if ($college_posts->have_posts()) { ?>
             <ul>
-           <?php while ( $college_posts->have_posts() ) : $college_posts->the_post();
-              // Loop output goes here
-            //if( $post->ID == $do_not_duplicate ) continue; // Add post to do not duplicate array
-            ?>
+           <?php while ($college_posts->have_posts()) {
+               $college_posts->the_post();
+               // Loop output goes here
+               // if( $post->ID == $do_not_duplicate ) continue; // Add post to do not duplicate array
+               ?>
             <li><a href="<?php echo uams_get_permalink() ?>" title="<?php the_title_attribute(); ?>"><?php the_title() ?></a></li>
 
-            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array ?>
-            <?php  endwhile; ?>
+            <?php $do_not_duplicate[] = $post->ID; // Add post to do not duplicate array?>
+            <?php } ?>
             </ul>
-            <?php endif; ?>
+            <?php } ?>
             <h3>Upcoming Events</h3>
 -->
-            <?php echo do_shortcode( '[events_list future=1 cat="16885" past=0 nb=5]' ); ?>
+            <?php echo do_shortcode('[events_list future=1 cat="16885" past=0 nb=5]'); ?>
 			<a class="more" href="https://news.uams.edu/upcoming-academic-continuing-education-events/">View More Events</a>
 
             </div><!-- .col-md-4 -->
@@ -256,7 +281,7 @@
 
     </div>
 
-    <?php //get_sidebar() ?>
+    <?php // get_sidebar()?>
 
   </div>
 
