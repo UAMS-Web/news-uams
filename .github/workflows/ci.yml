@@ -1,0 +1,105 @@
+name: CI
+
+# Calls the shared job chain in UAMS-Web/uams-ci-workflows (source: `.claude/skills/code-quality/templates/ci-reusable.yml`
+# in UAMS-Web/uams-claude-skills) for the repository-wide checks: Composer validate, synced files and workflow
+# copies, no-emoji, aggregate-needs, Pint, Rector, PHPStan and the Pest unit suite. This repository is public,
+# so Actions minutes are free and no job is gated on RUN_REMOTE_CI.
+#
+# Kept as a job of its own, beside the call:
+# - `lint-floor` parses every shipped PHP file under PHP 8.2, the supported floor. It was the plain
+#   workflow `lint-floor.yml` (UAMS-Web/news-uams#8) and is moved here unchanged so `CI` covers it. The
+#   chain's own `floor-lint` job is not used: it runs `scripts/lint-floor.php`, which this theme does not have.
+#
+# Inputs to the call:
+# - `linux-only: true`: every shared job runs on ubuntu-latest.
+# - `mutate: false`: mutation testing is off until its own ticket, after coverage. It also skips the
+#   `mutate-ignore` job, which only matters where a mutation run reads the annotations.
+# - `pest-command: composer test:unit`: the theme has a Unit suite and no Integration suite.
+#
+# The shared workflow is pinned to a commit (tag v0.10.0), so it takes a change when this file does.
+#
+# The `CI` job at the end `needs:` every other job, runs `if: always()`, and fails unless every needed job
+# reports `success`. A ruleset requires `CI` (with `Attribution footer` and `Closing keywords`, reported by the
+# two pull-request-body workflows beside this file), so a job can be renamed or added by editing only the
+# `needs:` list of `CI`. The aggregate-needs job fails the pull request when a job is left out. Do not rename `CI`.
+#
+# The shared setup (PHP, the Composer cache, the locked install) lives in `.github/actions/setup/action.yml`.
+# Its PHP is 8.4, the development PHP pinned in `config.platform.php`; the supported floor (8.2) is checked
+# by `lint-floor`.
+#
+# This theme uses a single-branch flow: an issue branch opens one pull request to `master`.
+# The workflow runs for every pull request, and for a push to `master`.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  # Lets the workflow be run on demand against a branch.
+  workflow_dispatch:
+
+# A new push to a pull request cancels that pull request's stale run. Every other run gets a
+# group of its own, keyed on the commit, so a later push never cancels it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    # Reported as `checks / <job> (ubuntu-latest)`. Pinned to the commit of tag v0.10.0.
+    uses: UAMS-Web/uams-ci-workflows/.github/workflows/ci.yml@252cbbdb0bc4353b547cde7f4380299288f6ed7a
+    with:
+      linux-only: true
+      mutate: false
+      pest-command: composer test:unit
+
+  lint-floor:
+    name: lint-floor
+    # Legs: Linux only. It parses PHP source with the PHP it runs under; the result does not depend on the platform.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      # The supported floor, with no Composer install.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      # Fails, naming the file, when a shipped PHP file uses syntax PHP 8.2 cannot parse.
+      - name: Parse every shipped PHP file on PHP 8.2
+        run: |
+          set -o pipefail
+          count=0
+          while IFS= read -r -d '' f; do
+            php -l "$f" > /dev/null || exit 1
+            count=$((count + 1))
+          done < <(find . -name '*.php' -not -path './vendor/*' -not -path './tests/*' -not -path './.git/*' -print0)
+          echo "linted $count files"
+          [ "$count" -gt 0 ]
+
+  # The one check a ruleset requires from this workflow. Keep `needs:` listing every other job in the file.
+  ci:
+    name: CI
+    needs: [checks, lint-floor]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # `skipped` and `cancelled` fail as well as `failure`: a job that did not run proved nothing.
+      - name: Every needed job succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Needed job results: $RESULTS"
+          # An empty list (an emptied `needs:`, a dropped `env:`) would run no iterations and pass having read nothing.
+          if [ -z "$RESULTS" ]; then echo "::error::No needed job results to read"; exit 1; fi
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              echo "::error::A needed job reported $result"
+              exit 1
+            fi
+          done
