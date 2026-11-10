@@ -76,8 +76,8 @@ it('returns an empty string for a post with no categories', function (): void {
     expect($markup)->toBe('');
 });
 
-it('currently raises an undefined array key warning for a post with no meta', function (): void {
+it('raises no warning for a post with no meta', function (): void {
     [, $warnings] = primaryCategoryRun([], [(object) ['term_id' => 9, 'name' => 'Other']]);
 
-    expect($warnings)->toBe(['Undefined array key 0']);
+    expect($warnings)->toBe([]);
 });

@@ -62,10 +62,14 @@ add_action( 'rest_api_init', 'my_customize_rest_cors', 15 );
 function uams_primary_post_category() {
 
     // if ( function_exists('pricat_get_categories') ) { // if Primary Category is active.
-        $prim_category = get_post_meta( get_the_ID(), 'pricat_get_categories' );
-        $prim_category_name = $prim_category[0]; // WPSEO_Primary_Term Object.
-        $prim_category_term = get_term_by('slug', $prim_category_name, 'category'); // term_id.
-        $term = get_term( $prim_category_term ); // WP_Term Object.
+        $prim_category_name = get_post_meta( get_the_ID(), 'pricat_get_categories', true ); // Primary category slug; '' when the post has none.
+        $term = null;
+
+        // Only look the term up when the post has a primary category.
+        if ( $prim_category_name ) {
+            $prim_category_term = get_term_by('slug', $prim_category_name, 'category'); // term_id.
+            $term = get_term( $prim_category_term ); // WP_Term Object.
+        }
 
         if ( $term && ! is_wp_error( $term ) ) { // if primary category term exists.
 
