@@ -10,6 +10,23 @@
         "platform": {
             "php": "8.4.27"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "require-dev": {
+        "brain/monkey": "^2.7",
+        "pestphp/pest": "^5.3"
+    },
+    "scripts": {
+        "test": [
+            "@test:unit"
+        ],
+        "test:unit": "pest"
+    },
+    "scripts-descriptions": {
+        "test": "Run the Pest unit suite.",
+        "test:unit": "Run the Pest suite that needs no WordPress and no database."
     }
 }
