@@ -18,6 +18,9 @@
 
         <section class="cards featured-grid margin-top-one">
         <?php
+          // Posts already shown, so later sections can exclude them.
+          $do_not_duplicate = array();
+
           // Start the Loop.
           $featured_posts = new WP_Query( array(
             'posts_per_page' => 7, // One Big, six small
