@@ -1,3 +1,4 @@
+<?php global $post, $paged; ?>
 <?php get_header(); ?>
 
 <?php

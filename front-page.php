@@ -1,3 +1,4 @@
+<?php global $post; ?>
 <?php get_header(); ?>
 
 <?php // get_template_part( 'header', 'image' );?>
