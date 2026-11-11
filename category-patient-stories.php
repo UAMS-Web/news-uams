@@ -16,6 +16,7 @@
 
       <div id='main_content' class="uams-body-copy" tabindex="-1">
       <h2>Patient Stories</h2>
+        <?php $do_not_duplicate = []; ?>
         <?php if (! is_paged()) { ?>
         <section class="cards featured-grid">
         <?php
