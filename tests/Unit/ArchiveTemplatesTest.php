@@ -221,9 +221,9 @@ it('closes the month and the year when the year changes', function (): void {
     expect($list)->toContain('<a href="/release-1/">Release 1</a> </li> </ul></li></ul></li><li><h2>2025</h2><ul class="monthly-archives"><li><h3>December</h3><ul> <li>');
 });
 
-it('omits the month heading of a new year when the month name repeats the previous one', function (): void {
+it('opens the month heading of a new year when the month name repeats the previous one', function (): void {
     $list = newsReleaseList(newsReleaseRender([[1, '2026', 'november', '09'], [2, '2025', 'november', '03']]));
 
-    expect($list)->toContain('<a href="/release-1/">Release 1</a> </li> </ul></li><li><h2>2025</h2><ul class="monthly-archives"> <li>')
-        ->not->toContain('<h3>November</h3><ul> <li> <span class="the_date">03');
+    expect($list)->toContain('<a href="/release-1/">Release 1</a> </li> </ul></li></ul></li><li><h2>2025</h2><ul class="monthly-archives"><li><h3>November</h3><ul> <li>')
+        ->and(substr_count($list, '<h3>November</h3>'))->toBe(2);
 });
