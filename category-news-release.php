@@ -100,18 +100,23 @@ if ($query->have_posts()) {
     while ($query->have_posts()) {
         $query->the_post();
 
-        if (ucfirst(get_the_time('F')) !== $month && $month !== '') {
+        $post_year = get_the_time('Y');
+        $post_month = ucfirst(get_the_time('F'));
+
+        // A new year closes the open month as well as the open year, and always opens its first month.
+        if (($post_month !== $month || $post_year != $year) && $month !== '') {
             echo '</ul></li>';
         }
-        if (get_the_time('Y') != $year && $year != '') {
+        if ($post_year != $year && $year != '') {
             echo '</ul></li>';
         }
-        if (get_the_time('Y') != $year) {
-            $year = get_the_time('Y');
+        if ($post_year != $year) {
+            $year = $post_year;
+            $month = '';
             echo '<li><h2>'.$year.'</h2><ul class="monthly-archives">';
         }
-        if (ucfirst(get_the_time('F')) !== $month) {
-            $month = ucfirst(get_the_time('F'));
+        if ($post_month !== $month) {
+            $month = $post_month;
             echo '<li><h3>'.$month.'</h3><ul>';
         }
 
