@@ -85,14 +85,14 @@ it('prints a hero for each category image', function (): void {
     expect(substr_count($markup, '<div class="uams-hero-image hero-height"'))->toBe(2)
         ->and($markup)->toContain('style="background-image:url(\' https://example.test/one.jpg\');" > <div id="hero-bg"> <div id="hero-container" class="container"> <h1 class="uams-site-title">Here\'s to Your Health</h1> <h2>with Dr. T. Glenn Pait</h2> <span class="udub-slant"><span></span></span>')
         ->toContain("url(' https://example.test/two.jpg')")
-        ->not->toContain('<div class="uams-hero-image" ');
+        ->and($markup)->not->toContain('<div class="uams-hero-image" ');
 });
 
 it('prints the header image as the hero when the category has no image', function (): void {
     [$markup] = heresRender([[], []], ['header' => 'http://example.test/header.jpg']);
 
     expect($markup)->toContain('<div class="uams-hero-image" style="background-image:url(\'scheme(http://example.test/header.jpg)\');" ></div>')
-        ->not->toContain('hero-height');
+        ->and($markup)->not->toContain('hero-height');
 });
 
 it('prints a plain hero when the category has no image and the theme has no header image', function (): void {
@@ -105,7 +105,7 @@ it('prints a plain hero when Meta Box is not active', function (): void {
     [$markup] = heresRender([[], []], ['images' => null]);
 
     expect($markup)->toContain('<div class="uams-hero-image" ></div>')
-        ->not->toContain('hero-height');
+        ->and($markup)->not->toContain('hero-height');
 });
 
 it('prints the category description when there is one', function (): void {
@@ -140,7 +140,7 @@ it('prints the later pages with the page number and only the episode query', fun
 
     expect($queries)->toBe([['posts_per_page' => 10, 'paged' => 3, 'category_name' => 'heres-to-your-health']])
         ->and($markup)->toContain('<h2> Page 3</h2>')
-        ->not->toContain('Latest Episodes')
+        ->and($markup)->not->toContain('Latest Episodes')
         ->toContain('[nav |Previous page|Next page]');
 });
 

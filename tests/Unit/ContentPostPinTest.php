@@ -41,7 +41,7 @@ it('prints the content and the mobile menu, and omits the boilerplate unless the
     expect($output)->toContain('<h1>Short title</h1>')
         ->toContain('<div id="mobile-sidebar-links" aria-hidden="true">  [mobile menu]</div>')
         ->toContain("\n[content]")
-        ->not->toContain('#Begin UAMS Boilerplate');
+        ->and($output)->not->toContain('#Begin UAMS Boilerplate');
 });
 
 it('prints the boilerplate paragraph when the post includes it', function (): void {
