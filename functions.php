@@ -130,7 +130,8 @@ function get_uams_breadcrumbs(): string
     } elseif (is_author()) {
         $author = get_queried_object();
         $html .= '<li class="current"><span> Author: '.$author->display_name.'</span>';
-    } elseif (get_queried_object_id() === (int) get_option('page_for_posts')) {
+    } elseif (get_queried_object_id() !== 0 && get_queried_object_id() === (int) get_option('page_for_posts')) {
+        // Id zero is an unqueried view, and the setting is also zero when no posts page is set.
         $html .= '<li class="current"><span> '.get_the_title(get_queried_object_id()).' </span>';
     }
 

@@ -242,7 +242,6 @@ it('adds no crumbs on an ordinary view that is neither a page nor an archive', f
     expect(breadcrumbsFor(['page' => false, 'single' => false]))->toBe(breadcrumbsWrap(''));
 });
 
-it('adds a crumb for id zero when no posts page is set, because an unqueried view also has id zero', function (): void {
-    expect(breadcrumbsFor(['posts_page' => 0]))
-        ->toBe(breadcrumbsWrap('<li class="current"><span> Title of 0 </span>'));
+it('adds no crumb for an unqueried view when no posts page is set', function (): void {
+    expect(breadcrumbsFor(['posts_page' => 0]))->toBe(breadcrumbsWrap(''));
 });
