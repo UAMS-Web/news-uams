@@ -73,6 +73,23 @@ it('keeps a single newline, which is not collapsed, so no space is found at that
     expect(text_cut("One\nTwo Three Four", 8, false))->toBe("One\nTwo");
 });
 
+it('cuts a title with no space in it at the limit', function (): void {
+    expect(text_cut('Superlongwordwithoutspaces', 10, true))->toBe('Superlongw...')
+        ->and(text_cut('Superlongwordwithoutspaces', 10, false))->toBe('Superlongw');
+});
+
+it('cuts at the limit when the only space lies beyond it', function (): void {
+    expect(text_cut('Hello world', 3, true))->toBe('Hel...');
+});
+
+it('cuts at a space in the second position', function (): void {
+    expect(text_cut('a bcdef', 4, true))->toBe('a...');
+});
+
+it('returns an empty string for a limit of zero or less', function (int $limit): void {
+    expect(text_cut('Superlongwordwithoutspaces', $limit, true))->toBe('');
+})->with([0, -1, -40]);
+
 it('returns an empty string for an empty title', function (): void {
     expect(text_cut('', 27, true))->toBe('');
 });

@@ -609,6 +609,9 @@ function uamswp_before_after($content)
 /**
  * Cut a title to at most `$length` characters, at a space, for the mobile sidebar button.
  *
+ * A title with no space within the first `$length` characters is cut at `$length` itself, and a
+ * `$length` below zero cuts it to nothing.
+ *
  * Moved here from content-post.php, which declared it each time the template was included.
  */
 function text_cut($text, $length, $dots): string
@@ -616,11 +619,16 @@ function text_cut($text, $length, $dots): string
     // $text =get_the_title();
     $text = trim(preg_replace('#[\s\n\r\t]{2,}#', ' ', $text));
     $text_temp = $text;
-    while (substr($text, $length, 1) !== ' ') {
+    $requested = max(0, $length);
+    while ($length > 0 && substr($text, $length, 1) !== ' ') {
         $length--;
         if ($length > strlen($text)) {
             break;
         }
+    }
+    // No space within the limit: cut at the limit.
+    if ($length < 1) {
+        $length = $requested;
     }
     $text = substr($text, 0, $length);
 
