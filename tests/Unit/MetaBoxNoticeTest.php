@@ -127,7 +127,7 @@ it('offers only the download link for an extension when the user cannot install 
     expect($output)->toContain(
         '<strong>MB Term Meta</strong> (the category image field) is not installed, and is not on wordpress.org. '
         .'<a href="https://metabox.io/plugins/mb-term-meta/">Download from metabox.io</a>.'
-    )->not->toContain('upload it');
+    )->and($output)->not->toContain('upload it');
 });
 
 it('lists every missing plugin in the order Meta Box, MB Settings Page, MB Term Meta', function (): void {
@@ -150,5 +150,5 @@ it('uses the site admin on a single site install', function (): void {
     $output = metaBoxNotice([], [], ['activate_plugins' => true, 'install_plugins' => true]);
 
     expect($output)->toContain('href="https://example.test/wp-admin/update.php?action=install-plugin&plugin=meta-box')
-        ->not->toContain('/network/');
+        ->and($output)->not->toContain('/network/');
 });

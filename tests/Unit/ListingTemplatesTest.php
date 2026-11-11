@@ -155,9 +155,9 @@ describe('front-page.php', function (): void {
 
         expect($columns)->toHaveCount(3)
             ->and(substr_count($columns[1], '<article'))->toBe(3)
-            ->and($columns[1])->toContain('title-1')->toContain('title-3')->toContain('title-5')->not->toContain('title-2')
+            ->and($columns[1])->toContain('title-1')->toContain('title-3')->toContain('title-5')->and($columns[1])->not->toContain('title-2')
             ->and(substr_count($columns[2], '<article'))->toBe(2)
-            ->and($columns[2])->toContain('title-2')->toContain('title-4')->not->toContain('title-1');
+            ->and($columns[2])->toContain('title-2')->toContain('title-4')->and($columns[2])->not->toContain('title-1');
     });
 
     it('prints no announcement list when there are no announcements', function (): void {
