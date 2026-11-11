@@ -196,8 +196,8 @@ describe('the category archives', function (): void {
         [$markup, $queries, $warnings] = listingRender($file, [[3, 4]], thumbnails: [3], options: ['paged' => 2]);
 
         expect($queries)->toHaveCount(1)
-            ->and($queries[0])->toMatchArray(['paged' => 2, 'post__not_in' => null])
-            ->and($warnings)->toBe(['Undefined variable $do_not_duplicate'])
+            ->and($queries[0])->toMatchArray(['paged' => 2, 'post__not_in' => []])
+            ->and($warnings)->toBe([])
             ->and($markup)->not->toContain('featured-grid');
     })->with([
         'health' => 'category-health.php',
