@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * The arguments register_post_status() takes from the WP Statuses plugin.
+ *
+ * WordPress's stubs seal the shape of $args to the keys core reads. The theme registers its
+ * "convert" status with keys the WP Statuses plugin reads as well (`post_type`,
+ * `show_in_metabox_dropdown`, `labels` and others), so this declaration, loaded through
+ * `stubFiles` in phpstan.neon.dist, replaces the sealed shape with an open one.
+ *
+ * @param  string  $post_status
+ * @param  array<string, mixed>  $args
+ * @return object
+ */
+function register_post_status($post_status, $args = [])
+{
+}

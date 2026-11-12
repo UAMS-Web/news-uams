@@ -26,7 +26,7 @@ function breadcrumbsFor(array $state = []): string
         'ancestors' => [],
         'front_page' => false,
         'home' => false,
-        '404' => false,
+        'not_found' => false,
         'search' => false,
         'search_query' => '',
         'author' => false,
@@ -54,7 +54,7 @@ function breadcrumbsFor(array $state = []): string
     when('is_home')->justReturn($s['home']);
     when('home_url')->alias(fn (string $path): string => 'https://example.test'.$path);
     when('get_bloginfo')->alias(fn (string $show): string => $show === 'title' ? $s['blog_title'] : 'wrong show');
-    when('is_404')->justReturn($s['404']);
+    when('is_404')->justReturn($s['not_found']);
     when('is_search')->justReturn($s['search']);
     when('get_search_query')->justReturn($s['search_query']);
     when('is_author')->justReturn($s['author']);
@@ -115,7 +115,7 @@ it('marks the site link as current on the front page', function (): void {
 });
 
 it('adds an oops crumb on a 404', function (): void {
-    expect(breadcrumbsFor(['404' => true]))->toBe(breadcrumbsWrap('<li class="current"><span>Ooops!</span>'));
+    expect(breadcrumbsFor(['not_found' => true]))->toBe(breadcrumbsWrap('<li class="current"><span>Ooops!</span>'));
 });
 
 it('adds the search query on a search page', function (): void {
