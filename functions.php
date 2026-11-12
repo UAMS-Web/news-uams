@@ -313,6 +313,9 @@ function uams_news_meta_box_notice(): void
     );
 }
 
+/**
+ * @return mixed
+ */
 function get_uams_boilerplate()
 {
     if (! function_exists('rwmb_meta')) {
@@ -321,6 +324,10 @@ function get_uams_boilerplate()
 
     return rwmb_meta('boilerplate_html', ['object_type' => 'setting'], 'uamswp_news');
 }
+/**
+ * @param  array<int, array<string, mixed>>  $settings_pages
+ * @return array<int, array<string, mixed>>
+ */
 function prefix_options_page($settings_pages)
 {
     $settings_pages[] = [
@@ -334,6 +341,10 @@ function prefix_options_page($settings_pages)
     return $settings_pages;
 }
 
+/**
+ * @param  array<int, array<string, mixed>>  $meta_boxes
+ * @return array<int, array<string, mixed>>
+ */
 function uams_options_meta_boxes($meta_boxes)
 {
     $meta_boxes[] = [
@@ -388,6 +399,10 @@ function exclude_id_list(): array
     return $value;
 }
 
+/**
+ * @param  array<int, array<string, mixed>>  $meta_boxes
+ * @return array<int, array<string, mixed>>
+ */
 function uams_news_meta_boxes($meta_boxes)
 {
     $meta_boxes[] = [
@@ -447,6 +462,7 @@ function uams_news_meta_boxes($meta_boxes)
 }
 
 /**
+ * @param  array<string, string>  $column_array
  * @return mixed[]
  */
 function add_img_column($column_array): array
@@ -460,6 +476,11 @@ function add_img_column($column_array): array
     return $column_array;
 }
 
+/**
+ * @param  string  $column_name
+ * @param  int  $post_id
+ * @return string
+ */
 function manage_img_column($column_name, $post_id)
 {
     if ($column_name == 'img') {
@@ -487,6 +508,9 @@ function manage_img_column($column_name, $post_id)
 // }
 // add_filter( 'excerpt_length', 'wpdocs_custom_excerpt_length', 999 );
 
+/**
+ * @param  string  $string_date
+ */
 function ap_date($string_date): string
 {
     $ap_dates = [
@@ -510,6 +534,10 @@ function uamswp_register_api_hooks(): void
     ]);
 }
 
+/**
+ * @param  array<string, mixed>  $object
+ * @return string
+ */
 function uamswp_return_full_content($object)
 {
     // get the id of the post object array
@@ -544,6 +572,8 @@ function create_api_posts_meta_field(): void
  *
  * The posts endpoint answers anonymous requests, so this list is the whole surface: add a key
  * only when a consumer reads it, and never a `_`-prefixed (protected) key.
+ *
+ * @return list<string>
  */
 function uamswp_api_post_meta_keys(): array
 {
@@ -556,6 +586,7 @@ function uamswp_api_post_meta_keys(): array
 }
 
 /**
+ * @param  array<string, mixed>  $object
  * @return mixed[]
  */
 function get_post_meta_for_api($object): array
@@ -583,6 +614,10 @@ function create_api_posts_category(): void
         'schema' => null,
     ]);
 }
+/**
+ * @param  array<string, mixed>  $object
+ * @return WP_Term[]|false|WP_Error
+ */
 function get_post_categories_for_api($object)
 {
     // get the id of the post object array
@@ -591,6 +626,10 @@ function get_post_categories_for_api($object)
     // return the post meta
     return get_the_terms($post_id, 'category');
 }
+/**
+ * @param  string  $content
+ * @return string
+ */
 function uamswp_before_after($content)
 {
     if (is_single() && is_main_query()) {
@@ -610,6 +649,10 @@ function uamswp_before_after($content)
  * `$length` below zero cuts it to nothing.
  *
  * Moved here from content-post.php, which declared it each time the template was included.
+ *
+ * @param  string  $text
+ * @param  int  $length
+ * @param  bool  $dots
  */
 function text_cut($text, $length, $dots): string
 {
