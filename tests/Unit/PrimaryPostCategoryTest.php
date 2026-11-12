@@ -32,7 +32,12 @@ function primaryCategoryRun(array $meta, array $categories): array
     );
     when('get_the_category')->justReturn($categories);
     when('is_wp_error')->alias(fn ($thing): bool => $thing instanceof WP_Error);
-    when('get_category_link')->alias(fn (stdClass|int|string $term): string => 'https://example.test/category/'.($term instanceof stdClass ? $term->term_id : $term).'/');
+    when('get_category_link')->alias(function (stdClass|int|string $term): string {
+        /** @var int|string $id */
+        $id = $term instanceof stdClass ? $term->term_id : $term;
+
+        return sprintf('https://example.test/category/%s/', $id);
+    });
     when('get_term_by')->alias(
         fn (string $field, $value): object|false => match ($value) {
             'news' => (object) ['term_id' => 5, 'name' => 'News'],

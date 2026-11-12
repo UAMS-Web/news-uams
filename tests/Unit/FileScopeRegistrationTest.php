@@ -16,7 +16,7 @@ declare(strict_types=1);
 /**
  * Load functions.php in a bare process.
  *
- * @return list<array<int, mixed>> Every registration, in order.
+ * @return list<mixed> Every registration, in order.
  */
 function fileScopeRegistrations(): array
 {

@@ -34,7 +34,7 @@ uses()
         loadTheme();
     })
     ->afterEach(function (): void {
-        $this->addToAssertionCount(Mockery::getContainer()->mockery_getExpectationCount());
+        $this->addToAssertionCount(Mockery::getContainer()->mockery_getExpectationCount()); // @phpstan-ignore method.nonObject (Pest binds the hook to the test case)
 
         tearDown();
     })
@@ -55,22 +55,27 @@ function hideFunctions(string ...$names): void
             return false;
         }
 
-        return relay();
+        return (bool) relay();
     });
 }
 
 /**
  * The post a template is printing: the global WordPress sets while a loop runs.
+ *
+ * @return object{ID: int, time: list<string>}
  */
-function currentPost(): stdClass
+function currentPost(): object
 {
     $post = $GLOBALS['post'] ?? null;
 
-    if (! $post instanceof stdClass) {
+    if (! is_object($post)) {
         throw new LogicException('No post is set.');
     }
 
-    return $post;
+    /** @var object{ID: int, time: list<string>} $typed */
+    $typed = $post;
+
+    return $typed;
 }
 
 /**
