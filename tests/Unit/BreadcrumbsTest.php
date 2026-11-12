@@ -43,6 +43,7 @@ function breadcrumbsFor(array $state = []): string
         'archive_link' => '',
         'rewrite' => [],
         'blog_title' => 'UAMS   News',
+        'missing_pages' => [],
     ];
 
     stubEscapeFunctions();
@@ -90,7 +91,7 @@ function breadcrumbsFor(array $state = []): string
     when('get_term_by')->alias(fn (string $field, string $value, string $taxonomy): object => (object) ['name' => 'Term '.$value, 'by' => $field.'/'.$taxonomy]);
     when('get_taxonomy')->alias(fn (string $name): object => (object) ['labels' => (object) ['name' => 'Taxonomy '.$name]]);
     when('wp_trim_words')->alias(fn (string $text, int $words, string $more): string => 'trim('.$text.','.$words.','.$more.')');
-    when('get_post')->alias(fn (int $id): object => (object) ['ID' => $id, 'post_title' => 'Page "'.$id.'"']);
+    when('get_post')->alias(fn (int $id): ?object => in_array($id, $s['missing_pages'], true) ? null : (object) ['ID' => $id, 'post_title' => 'Page "'.$id.'"']);
     when('get_permalink')->alias(fn (int $id): string => 'https://example.test/page-'.$id.'/');
 
     return get_uams_breadcrumbs();
@@ -229,6 +230,13 @@ it('adds the page when the page is the posts page but not the front page', funct
 
 it('adds the page when it is the front page but not the posts page, unless it is the front page', function (): void {
     expect(breadcrumbsFor(['page' => true, 'home' => true, 'front_page' => true]))->toBe(breadcrumbsWrap('', true));
+});
+
+it('skips an ancestor that is not a page', function (): void {
+    $items = breadcrumbsFor(['page' => true, 'ancestors' => [3, 5], 'missing_pages' => [3]]);
+
+    expect($items)->not->toContain('page-3')
+        ->toContain('page-5');
 });
 
 it('skips an empty ancestor id', function (): void {
