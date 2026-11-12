@@ -101,7 +101,7 @@ if ($query->have_posts()) {
         $query->the_post();
 
         $post_year = get_the_time('Y');
-        $post_month = ucfirst(get_the_time('F'));
+        $post_month = ucfirst(uams_news_text(get_the_time('F')));
 
         // A new year closes the open month as well as the open year, and always opens its first month.
         if (($post_month !== $month || $post_year != $year) && $month !== '') {

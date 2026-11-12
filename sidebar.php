@@ -15,11 +15,11 @@
     // Add News Contacts
     ?>
 	<?php
-    if ('null' !== (get_post_meta(get_the_ID(), 'media_contact', true))) {
+    if ('null' !== (get_post_meta(uams_news_post_id(), 'media_contact', true))) {
         // dynamic_sidebar( get_post_meta( get_the_ID(), 'media_contact', true ));
         // print('<br/>');
         // echo get_post_meta( get_the_ID(), 'media_contact', true );
-        switch (get_post_meta(get_the_ID(), 'media_contact', true)) {
+        switch (get_post_meta(uams_news_post_id(), 'media_contact', true)) {
             case 'Media Taylor-Caldwell':
                 echo '<div role="navigation" aria-label="sidebar_navigation" id="uams-contact-taylor-caldwell" class="widget contact-widget">'.
                      ' 	<div class="contact-widget-inner">'.

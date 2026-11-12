@@ -57,13 +57,15 @@ function uams_primary_post_category(): string
 {
 
     // if ( function_exists('pricat_get_categories') ) { // if Primary Category is active.
-    $prim_category_name = get_post_meta(get_the_ID(), 'pricat_get_categories', true); // Primary category slug; '' when the post has none.
+    $prim_category_name = get_post_meta(uams_news_post_id(), 'pricat_get_categories', true); // Primary category slug; '' when the post has none.
     $term = null;
 
     // Only look the term up when the post has a primary category.
     if ($prim_category_name) {
         $prim_category_term = get_term_by('slug', $prim_category_name, 'category'); // term_id.
-        $term = get_term($prim_category_term); // WP_Term Object.
+        if ($prim_category_term) {
+            $term = get_term($prim_category_term); // WP_Term Object.
+        }
     }
 
     if ($term && ! is_wp_error($term)) { // if primary category term exists.
@@ -129,7 +131,7 @@ function get_uams_breadcrumbs(): string
         $html .= '<li class="current"><span>Search results for '.get_search_query().'</span>';
     } elseif (is_author()) {
         $author = get_queried_object();
-        $html .= '<li class="current"><span> Author: '.$author->display_name.'</span>';
+        $html .= '<li class="current"><span> Author: '.$author->display_name.'</span>'; // @phpstan-ignore property.notFound (the queried object of an author archive is a WP_User)
     } elseif (get_queried_object_id() !== 0 && get_queried_object_id() === (int) get_option('page_for_posts')) {
         // Id zero is an unqueried view, and the setting is also zero when no posts page is set.
         $html .= '<li class="current"><span> '.get_the_title(get_queried_object_id()).' </span>';
@@ -139,7 +141,7 @@ function get_uams_breadcrumbs(): string
     if (is_category() || is_tax() || is_single() || is_post_type_archive()) {
 
         if (is_post_type_archive() && ! is_tax()) {
-            $posttype = get_post_type_object(get_post_type());
+            $posttype = get_post_type_object(get_post_type()); // @phpstan-ignore argument.type (a post type archive has a post type)
             // $html .=  '<li class="current"><a href="'  . get_post_type_archive_link( $posttype->query_var ) .'" title="'. $posttype->labels->menu_name .'">'. $posttype->labels->menu_name  . '</a>';
             $html .= '<li class="current"><span>'.$posttype->labels->menu_name.'</span>';
         }
@@ -147,20 +149,20 @@ function get_uams_breadcrumbs(): string
         if (is_category()) {
             $category = get_category(get_query_var('cat'));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
-            $html .= '<li class="current"><span>'.get_cat_name($category->term_id).'</span>';
+            $html .= '<li class="current"><span>'.get_cat_name($category->term_id).'</span>'; // @phpstan-ignore property.notFound (the category query variable of a category archive names a category)
         }
 
         if (is_tax() && ! is_post_type_archive()) {
             $term = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy'));
             $tax = get_taxonomy(get_query_var('taxonomy'));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
-            $html .= '<li class="current"><span>'.$tax->labels->name.': '.$term->name.'</span>';
+            $html .= '<li class="current"><span>'.$tax->labels->name.': '.$term->name.'</span>'; // @phpstan-ignore property.nonObject, property.nonObject (a taxonomy archive has a taxonomy and a term)
         }
 
         if (is_tax() && is_post_type_archive()) {
             $tax = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy'));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
-            $html .= '<li class="current"><span>'.$tax->name.'</span>';
+            $html .= '<li class="current"><span>'.$tax->name.'</span>'; // @phpstan-ignore property.nonObject (a taxonomy archive has a term)
         }
 
         if (is_single()) {
@@ -168,8 +170,8 @@ function get_uams_breadcrumbs(): string
                 $html .= '<li>'.uams_primary_post_category(); // <a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
             }
             if (uams_is_custom_post_type()) {
-                $posttype = get_post_type_object(get_post_type());
-                $archive_link = get_post_type_archive_link($posttype->query_var);
+                $posttype = get_post_type_object(get_post_type()); // @phpstan-ignore argument.type (a single custom post has a post type)
+                $archive_link = get_post_type_archive_link($posttype->query_var); // @phpstan-ignore argument.type (a custom post type has a query variable name)
                 if (! empty($archive_link)) {
                     $html .= '<li><a href="'.$archive_link.'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>';
                 } elseif (! empty($posttype->rewrite['slug'])) {
@@ -509,7 +511,10 @@ function manage_img_column($column_name, $post_id)
 // add_filter( 'excerpt_length', 'wpdocs_custom_excerpt_length', 999 );
 
 /**
- * @param  string  $string_date
+ * A date in Associated Press style. A value that is not a date string, such as the `false` that
+ * get_the_date() returns outside the loop, is read as the start of the Unix epoch.
+ *
+ * @param  string|int|false  $string_date
  */
 function ap_date($string_date): string
 {
@@ -519,9 +524,31 @@ function ap_date($string_date): string
         'Sept.', 'Oct.', 'Nov.', 'Dec.',
     ];
 
-    return $ap_dates[date('n', strtotime($string_date)) - 1].' '.
-           date('j', strtotime($string_date)).', '.
-           date('Y', strtotime($string_date));
+    $timestamp = is_string($string_date) ? strtotime($string_date) : false;
+    if ($timestamp === false) {
+        $timestamp = 0;
+    }
+
+    return $ap_dates[date('n', $timestamp) - 1].' '.
+           date('j', $timestamp).', '.
+           date('Y', $timestamp);
+}
+
+/**
+ * The id of the current post, or 0 outside the loop, where get_the_ID() returns false.
+ */
+function uams_news_post_id(): int
+{
+    return get_the_ID() ?: 0;
+}
+
+/**
+ * A value WordPress returns as a string, a number or false, as text: false and anything that is not
+ * a scalar print as nothing.
+ */
+function uams_news_text(mixed $value): string
+{
+    return is_scalar($value) ? sprintf('%s', $value) : '';
 }
 
 function uamswp_register_api_hooks(): void
