@@ -52,7 +52,7 @@ parameters:
     # from 0 upward (see the code-quality skill), then raise it by one per
     # change as findings are fixed, until `max`. Lowering it is a deliberate,
     # argued change, not a quiet edit to get a red run green.
-    level: 4
+    level: 5
 
     # First-party PHP: the templates and functions at the repository root, and
     # the tests (test bugs are real bugs).
@@ -70,6 +70,11 @@ parameters:
         - sidebar.php
         - thinstrip.php
         - tests
+
+    # Stubs that replace the declarations in WordPress's own stubs (phpstan-wp-statuses.stub: the
+    # arguments register_post_status() takes from the WP Statuses plugin).
+    stubFiles:
+        - phpstan-wp-statuses.stub
 
     # The fixtures run in child processes and declare stand-ins for WordPress functions with
     # their own signatures, which would otherwise be read as the signatures the theme calls.
