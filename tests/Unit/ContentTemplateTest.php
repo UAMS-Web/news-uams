@@ -19,7 +19,7 @@ use function Brain\Monkey\Functions\when;
 /**
  * Render content.php for a request.
  *
- * @param  array<string, mixed>  $state  Overrides for the defaults below.
+ * @param  array{single?: bool, home?: bool, search?: bool, archive?: bool, thumbnail_id?: int, meta?: array<string, string|false>, byline?: bool, coauthors?: bool, caption?: string, credit?: string}  $state  Overrides for the defaults below.
  */
 function contentRender(array $state = []): string
 {

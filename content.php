@@ -2,7 +2,7 @@
 $show_image = get_post_meta(uams_news_post_id(), 'show_image_single', true);
 if (($show_image !== false) && is_single() && get_post_thumbnail_id()) { ?>
     <p class="featured-image">
-      <a href="<?php echo esc_url(uams_news_text(get_the_post_thumbnail_url(uams_news_post_id(), 'full'))); ?>" title="<?php echo esc_attr(get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true)); ?>" data-title="<?php echo esc_attr(uams_news_text(get_post_field('post_title', get_post_thumbnail_id()))); ?>" data-caption="<?php echo esc_attr(uams_news_text(get_post_field('post_excerpt', get_post_thumbnail_id()))); ?>">
+      <a href="<?php echo esc_url(uams_news_text(get_the_post_thumbnail_url(uams_news_post_id(), 'full'))); ?>" title="<?php echo esc_attr(uams_news_text(get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true))); ?>" data-title="<?php echo esc_attr(uams_news_text(get_post_field('post_title', get_post_thumbnail_id()))); ?>" data-caption="<?php echo esc_attr(uams_news_text(get_post_field('post_excerpt', get_post_thumbnail_id()))); ?>">
         <span class="screen-reader-text"><?php esc_attr_e('View Larger Image', 'UAMS'); ?></span>
       <?php the_post_thumbnail('post-image'); ?>
       <?php if (get_post_field('post_excerpt', get_post_thumbnail_id())) { ?>
@@ -10,7 +10,7 @@ if (($show_image !== false) && is_single() && get_post_thumbnail_id()) { ?>
         <?php } ?>
 	<?php
           $credit = get_post_meta(get_post_thumbnail_id(), '_media_credit', true);
-    echo $credit ? '<span class="wp-media-credit">Image by '.esc_html($credit).'</span>' : '';
+    echo $credit ? '<span class="wp-media-credit">Image by '.esc_html(uams_news_text($credit)).'</span>' : '';
     ?>
       </a>
     </p>

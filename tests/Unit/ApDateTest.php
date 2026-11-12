@@ -22,7 +22,7 @@ it('drops the leading zero from the day', function (): void {
     expect(ap_date('2026-05-02'))->toBe('May 2, 2026');
 });
 
-it('reads a value that is not a date string as the start of the Unix epoch', function (mixed $value): void {
+it('reads a value that is not a date string as the start of the Unix epoch', function (string|int|false $value): void {
     expect(ap_date($value))->toBe('Jan. 1, 1970');
 })->with([
     'false, as get_the_date() returns outside the loop' => [false],

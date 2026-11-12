@@ -18,7 +18,7 @@ use function Brain\Monkey\Functions\when;
  * Render category-heres-to-your-health.php.
  *
  * @param  list<list<int>>  $queues  One list of post ids per WP_Query the template builds.
- * @param  array<string, mixed>  $options  `images` (what rwmb_meta returns, or null when Meta Box is not active), `header` (the header image), `description`, `paged`.
+ * @param  array{images?: list<array{full_url: string}>|null, header?: string|false, description?: string, paged?: int}  $options  `images` (what rwmb_meta returns, or null when Meta Box is not active), `header` (the header image), `description`, `paged`.
  * @return array{0: string, 1: list<array<string, mixed>>}
  */
 function heresRender(array $queues, array $options = []): array
@@ -55,20 +55,20 @@ function heresRender(array $queues, array $options = []): array
     when('set_url_scheme')->alias(fn (string $url): string => 'scheme('.$url.')');
     when('category_description')->justReturn($options['description']);
     when('is_paged')->justReturn($options['paged'] > 1);
-    when('has_post_thumbnail')->alias(fn (): bool => $GLOBALS['post']->ID % 2 === 1);
+    when('has_post_thumbnail')->alias(fn (): bool => currentPost()->ID % 2 === 1);
     when('the_post_thumbnail')->alias(function (mixed $size): void {
         echo '[thumbnail '.json_encode($size).']';
     });
-    when('uams_primary_post_category')->alias(fn (): string => 'category-'.$GLOBALS['post']->ID);
-    when('uams_get_permalink')->alias(fn (): string => '/post-'.$GLOBALS['post']->ID.'/');
+    when('uams_primary_post_category')->alias(fn (): string => 'category-'.currentPost()->ID);
+    when('uams_get_permalink')->alias(fn (): string => '/post-'.currentPost()->ID.'/');
     when('the_title_attribute')->alias(function (): void {
-        echo 'attr-'.$GLOBALS['post']->ID;
+        echo 'attr-'.currentPost()->ID;
     });
     when('the_title')->alias(function (): void {
-        echo 'title-'.$GLOBALS['post']->ID;
+        echo 'title-'.currentPost()->ID;
     });
     when('the_excerpt')->alias(function (): void {
-        echo '[excerpt '.$GLOBALS['post']->ID.']';
+        echo '[excerpt '.currentPost()->ID.']';
     });
     when('posts_nav_link')->alias(function (string $sep, string $prev, string $next): void {
         echo '[nav '.$sep.'|'.$prev.'|'.$next.']';
@@ -170,18 +170,18 @@ function newsReleaseRender(array $posts): string
         echo '[sidebar]';
     });
     when('get_the_time')->alias(fn (string $format): string => match ($format) {
-        'Y' => $GLOBALS['post']->time[0],
-        'F' => $GLOBALS['post']->time[1],
+        'Y' => currentPost()->time[0],
+        'F' => currentPost()->time[1],
         default => 'wrong format',
     });
     when('the_time')->alias(function (string $format): void {
-        echo $format === 'd' ? $GLOBALS['post']->time[2] : 'wrong format';
+        echo $format === 'd' ? currentPost()->time[2] : 'wrong format';
     });
     when('the_permalink')->alias(function (): void {
-        echo '/release-'.$GLOBALS['post']->ID.'/';
+        echo '/release-'.currentPost()->ID.'/';
     });
     when('the_title')->alias(function (): void {
-        echo 'Release '.$GLOBALS['post']->ID;
+        echo 'Release '.currentPost()->ID;
     });
 
     return squish(renderTemplate('category-news-release.php'));
