@@ -131,7 +131,7 @@ function get_uams_breadcrumbs(): string
         $html .= '<li class="current"><span>Search results for '.get_search_query().'</span>';
     } elseif (is_author()) {
         $author = get_queried_object();
-        $html .= '<li class="current"><span> Author: '.$author->display_name.'</span>'; // @phpstan-ignore property.notFound (the queried object of an author archive is a WP_User)
+        $html .= '<li class="current"><span> Author: '.$author->display_name.'</span>'; // @phpstan-ignore property.nonObject (the queried object of an author archive is a WP_User)
     } elseif (get_queried_object_id() !== 0 && get_queried_object_id() === (int) get_option('page_for_posts')) {
         // Id zero is an unqueried view, and the setting is also zero when no posts page is set.
         $html .= '<li class="current"><span> '.get_the_title(get_queried_object_id()).' </span>';
@@ -143,13 +143,13 @@ function get_uams_breadcrumbs(): string
         if (is_post_type_archive() && ! is_tax()) {
             $posttype = get_post_type_object(get_post_type()); // @phpstan-ignore argument.type (a post type archive has a post type)
             // $html .=  '<li class="current"><a href="'  . get_post_type_archive_link( $posttype->query_var ) .'" title="'. $posttype->labels->menu_name .'">'. $posttype->labels->menu_name  . '</a>';
-            $html .= '<li class="current"><span>'.$posttype->labels->menu_name.'</span>';
+            $html .= '<li class="current"><span>'.$posttype->labels->menu_name.'</span>'; // @phpstan-ignore property.nonObject (a post type archive has a registered post type)
         }
 
         if (is_category()) {
             $category = get_category(get_query_var('cat'));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
-            $html .= '<li class="current"><span>'.get_cat_name($category->term_id).'</span>'; // @phpstan-ignore property.notFound (the category query variable of a category archive names a category)
+            $html .= '<li class="current"><span>'.get_cat_name($category->term_id).'</span>'; // @phpstan-ignore property.nonObject (the category query variable of a category archive names a category)
         }
 
         if (is_tax() && ! is_post_type_archive()) {
@@ -171,9 +171,9 @@ function get_uams_breadcrumbs(): string
             }
             if (uams_is_custom_post_type()) {
                 $posttype = get_post_type_object(get_post_type()); // @phpstan-ignore argument.type (a single custom post has a post type)
-                $archive_link = get_post_type_archive_link($posttype->query_var); // @phpstan-ignore argument.type (a custom post type has a query variable name)
+                $archive_link = get_post_type_archive_link($posttype->query_var); // @phpstan-ignore argument.type, property.nonObject (a custom post type is registered and has a query variable name)
                 if (! empty($archive_link)) {
-                    $html .= '<li><a href="'.$archive_link.'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>';
+                    $html .= '<li><a href="'.$archive_link.'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>'; // @phpstan-ignore property.nonObject, property.nonObject (a custom post type is registered)
                 } elseif (! empty($posttype->rewrite['slug'])) {
                     $html .= '<li><a href="'.site_url('/'.$posttype->rewrite['slug'].'/').'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>';
                 }
@@ -193,6 +193,9 @@ function get_uams_breadcrumbs(): string
             foreach (array_filter($ancestors) as $index => $ancestor) {
                 $class = $index + 1 === count($ancestors) ? ' class="current" ' : '';
                 $page = get_post($ancestor);
+                if ($page === null) {
+                    continue;
+                }
                 $url = get_permalink($page->ID);
                 $title_attr = esc_attr($page->post_title);
                 if (! empty($class)) {
@@ -684,7 +687,7 @@ function uamswp_before_after($content)
 function text_cut($text, $length, $dots): string
 {
     // $text =get_the_title();
-    $text = trim(preg_replace('#[\s\n\r\t]{2,}#', ' ', $text));
+    $text = trim(preg_replace('#[\s\n\r\t]{2,}#', ' ', $text)); // @phpstan-ignore argument.type (the pattern is valid and has no /u flag, so preg_replace does not return null)
     $text_temp = $text;
     $requested = max(0, $length);
     while ($length > 0 && substr($text, $length, 1) !== ' ') {
