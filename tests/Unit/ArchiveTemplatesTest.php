@@ -44,7 +44,7 @@ function heresRender(array $queues, array $options = []): array
     when('get_sidebar')->alias(function (): void {
         echo '[sidebar]';
     });
-    when('get_queried_object')->justReturn((object) ['term_id' => 31]);
+    when('get_queried_object_id')->justReturn(31);
     if ($options['images'] === null) {
         hideFunctions('rwmb_meta');
     } else {
@@ -93,6 +93,12 @@ it('prints the header image as the hero when the category has no image', functio
 
     expect($markup)->toContain('<div class="uams-hero-image" style="background-image:url(\'scheme(http://example.test/header.jpg)\');" ></div>')
         ->and($markup)->not->toContain('hero-height');
+});
+
+it('prints a plain hero when the theme has no header image and WordPress answers false', function (): void {
+    [$markup] = heresRender([[], []], ['header' => false]);
+
+    expect($markup)->toContain('<div class="uams-hero-image" ></div>');
 });
 
 it('prints a plain hero when the category has no image and the theme has no header image', function (): void {

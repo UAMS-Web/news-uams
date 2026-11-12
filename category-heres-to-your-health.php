@@ -2,8 +2,9 @@
 <?php get_header(); ?>
 
 <?php
-    $term_id = get_queried_object()->term_id;
+    $term_id = get_queried_object_id();
 $images = function_exists('rwmb_meta') ? rwmb_meta('cat_image', ['object_type' => 'term', 'size' => 'full'], $term_id) : [];
+$header_image = get_header_image();
 if ($images) {
     foreach ($images as $image) { ?>
 			<div class="uams-hero-image hero-height" style="background-image:url(' <?php echo esc_url($image['full_url']); ?>');" >
@@ -17,7 +18,7 @@ if ($images) {
 			</div>
 	<?php }
     } else { ?>
-			<div class="uams-hero-image" <?php if (get_header_image() !== '') { ?> style="background-image:url('<?php echo set_url_scheme(get_header_image()); ?>');"<?php } ?> ></div>
+			<div class="uams-hero-image" <?php if ($header_image) { ?> style="background-image:url('<?php echo set_url_scheme($header_image); ?>');"<?php } ?> ></div>
 	<?php } ?>
 
 <div class="container uams-body">

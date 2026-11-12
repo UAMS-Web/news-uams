@@ -1,12 +1,12 @@
 <?php
-$show_image = get_post_meta(get_the_ID(), 'show_image_single', true);
+$show_image = get_post_meta(uams_news_post_id(), 'show_image_single', true);
 if (($show_image !== false) && is_single() && get_post_thumbnail_id()) { ?>
     <p class="featured-image">
-      <a href="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'full')); ?>" title="<?php echo esc_attr(get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true)); ?>" data-title="<?php echo esc_attr(get_post_field('post_title', get_post_thumbnail_id())); ?>" data-caption="<?php echo esc_attr(get_post_field('post_excerpt', get_post_thumbnail_id())); ?>">
+      <a href="<?php echo esc_url(uams_news_text(get_the_post_thumbnail_url(uams_news_post_id(), 'full'))); ?>" title="<?php echo esc_attr(get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', true)); ?>" data-title="<?php echo esc_attr(uams_news_text(get_post_field('post_title', get_post_thumbnail_id()))); ?>" data-caption="<?php echo esc_attr(uams_news_text(get_post_field('post_excerpt', get_post_thumbnail_id()))); ?>">
         <span class="screen-reader-text"><?php esc_attr_e('View Larger Image', 'UAMS'); ?></span>
       <?php the_post_thumbnail('post-image'); ?>
       <?php if (get_post_field('post_excerpt', get_post_thumbnail_id())) { ?>
-        <br/><span class="wp-caption-text"><?php echo wp_kses_post(get_post_field('post_excerpt', get_post_thumbnail_id())); ?></span>
+        <br/><span class="wp-caption-text"><?php echo wp_kses_post(uams_news_text(get_post_field('post_excerpt', get_post_thumbnail_id()))); ?></span>
         <?php } ?>
 	<?php
           $credit = get_post_meta(get_post_thumbnail_id(), '_media_credit', true);
@@ -52,7 +52,7 @@ if (! is_home() && ! is_search() && ! is_archive()) {
       the_content();
   }
 // comments_template(true);
-if (is_single() && get_post_meta(get_the_ID(), 'include_boilerplate', true)) {
+if (is_single() && get_post_meta(uams_news_post_id(), 'include_boilerplate', true)) {
     echo get_uams_boilerplate();
 }
 ?>

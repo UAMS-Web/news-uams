@@ -134,8 +134,7 @@ it('lists every missing plugin in the order Meta Box, MB Settings Page, MB Term 
     $output = metaBoxNotice([], ['mb-settings-page/mb-settings-page.php'], ['activate_plugins' => true, 'install_plugins' => true]);
 
     expect(substr_count($output, '<li>'))->toBe(3)
-        ->and(strpos($output, 'Meta Box</strong>'))->toBeLessThan(strpos($output, 'MB Settings Page</strong>'))
-        ->and(strpos($output, 'MB Settings Page</strong>'))->toBeLessThan(strpos($output, 'MB Term Meta</strong>'))
+        ->and($output)->toMatch('#Meta Box</strong>.*MB Settings Page</strong>.*MB Term Meta</strong>#s')
         ->and($output)->toContain('</li><li>');
 });
 
