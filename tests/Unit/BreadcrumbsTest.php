@@ -17,7 +17,7 @@ use function Brain\Monkey\Functions\when;
 /**
  * Build the trail for a request.
  *
- * @param  array<string, mixed>  $state  Overrides for the defaults below.
+ * @param  array{post_id?: int, ancestors?: list<int>, front_page?: bool, home?: bool, not_found?: bool, search?: bool, search_query?: string, author?: bool, queried_object?: object, queried_id?: int, posts_page?: int|string, category?: bool, tax?: bool, single?: bool, archive?: bool, page?: bool, has_category?: bool, custom_type?: bool, archive_link?: string, rewrite?: array<string, string>, blog_title?: string, missing_pages?: list<int>}  $state  Overrides for the defaults below.
  */
 function breadcrumbsFor(array $state = []): string
 {
@@ -80,13 +80,13 @@ function breadcrumbsFor(array $state = []): string
     ]);
     when('get_post_type_archive_link')->alias(fn (string $type): string => $type === 'release' ? $s['archive_link'] : 'wrong type');
     when('site_url')->alias(fn (string $path): string => 'https://example.test'.$path);
-    when('get_query_var')->alias(fn (string $var): string => match ($var) {
-        'cat' => 'cat-id',
+    when('get_query_var')->alias(fn (string $var): string|int => match ($var) {
+        'cat' => 12,
         'term' => 'term-slug',
         'taxonomy' => 'tax-name',
         default => 'wrong var',
     });
-    when('get_category')->alias(fn (string $id): object => (object) ['term_id' => $id === 'cat-id' ? 33 : 0]);
+    when('get_category')->alias(fn (int $id): object => (object) ['term_id' => $id === 12 ? 33 : 0]);
     when('get_cat_name')->alias(fn (int $id): string => $id === 33 ? 'Health' : 'wrong category');
     when('get_term_by')->alias(fn (string $field, string $value, string $taxonomy): object => (object) ['name' => 'Term '.$value, 'by' => $field.'/'.$taxonomy]);
     when('get_taxonomy')->alias(fn (string $name): object => (object) ['labels' => (object) ['name' => 'Taxonomy '.$name]]);

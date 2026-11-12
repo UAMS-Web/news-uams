@@ -35,7 +35,7 @@ function listingPosts(array $ids): array
  *
  * @param  list<list<int>>  $queues  One list of post ids per WP_Query the template builds, in order.
  * @param  list<int>  $thumbnails  The ids of the posts that have a featured image.
- * @param  array<string, mixed>  $options  `paged` (the page number or null for none), `excluded` (the category ids the settings page excludes).
+ * @param  array{paged?: int, excluded?: list<int>}  $options  `paged` (the page number or null for none), `excluded` (the category ids the settings page excludes).
  * @return array{0: string, 1: list<array<string, mixed>>, 2: list<string>} The squished markup, the queries built and the PHP warnings raised.
  */
 function listingRender(string $file, array $queues, array $thumbnails = [], array $options = []): array
@@ -59,25 +59,25 @@ function listingRender(string $file, array $queues, array $thumbnails = [], arra
         echo '[sidebar]';
     });
     when('is_paged')->justReturn($options['paged'] > 1);
-    when('has_post_thumbnail')->alias(fn (): bool => in_array($GLOBALS['post']->ID, $thumbnails, true));
+    when('has_post_thumbnail')->alias(fn (): bool => in_array(currentPost()->ID, $thumbnails, true));
     when('the_post_thumbnail')->alias(function (mixed $size): void {
         echo '[thumbnail '.json_encode($size).']';
     });
-    when('uams_primary_post_category')->alias(fn (): string => 'category-'.$GLOBALS['post']->ID);
-    when('uams_get_permalink')->alias(fn (): string => '/post-'.$GLOBALS['post']->ID.'/');
+    when('uams_primary_post_category')->alias(fn (): string => 'category-'.currentPost()->ID);
+    when('uams_get_permalink')->alias(fn (): string => '/post-'.currentPost()->ID.'/');
     when('the_title_attribute')->alias(function (): void {
-        echo 'attr-'.$GLOBALS['post']->ID;
+        echo 'attr-'.currentPost()->ID;
     });
     when('the_title')->alias(function (): void {
-        echo 'title-'.$GLOBALS['post']->ID;
+        echo 'title-'.currentPost()->ID;
     });
     when('get_the_date')->justReturn('2026-11-09');
-    when('get_the_excerpt')->alias(fn (): string => 'excerpt-'.$GLOBALS['post']->ID);
+    when('get_the_excerpt')->alias(fn (): string => 'excerpt-'.currentPost()->ID);
     when('the_excerpt')->alias(function (): void {
-        echo '[excerpt '.$GLOBALS['post']->ID.']';
+        echo '[excerpt '.currentPost()->ID.']';
     });
     when('the_author')->alias(function (): void {
-        echo 'author-'.$GLOBALS['post']->ID;
+        echo 'author-'.currentPost()->ID;
     });
     when('do_shortcode')->alias(fn (string $code): string => '['.$code.']');
     when('rewind_posts')->justReturn();

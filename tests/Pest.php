@@ -60,6 +60,20 @@ function hideFunctions(string ...$names): void
 }
 
 /**
+ * The post a template is printing: the global WordPress sets while a loop runs.
+ */
+function currentPost(): stdClass
+{
+    $post = $GLOBALS['post'] ?? null;
+
+    if (! $post instanceof stdClass) {
+        throw new LogicException('No post is set.');
+    }
+
+    return $post;
+}
+
+/**
  * Include a template the way WordPress does and return what it printed.
  *
  * WordPress includes a template from inside load_template(), which declares the loop globals, so

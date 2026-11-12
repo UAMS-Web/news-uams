@@ -25,7 +25,13 @@ function fileScopeRegistrations(): array
 
     expect($output)->toBeString();
 
-    return json_decode((string) $output, true, 512, JSON_THROW_ON_ERROR);
+    $registrations = json_decode((string) $output, true, 512, JSON_THROW_ON_ERROR);
+
+    if (! is_array($registrations) || ! array_is_list($registrations)) {
+        throw new UnexpectedValueException('The registrations are not a list.');
+    }
+
+    return $registrations;
 }
 
 it('registers the hooks, image sizes and post status when the file is included', function (): void {

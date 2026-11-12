@@ -57,7 +57,7 @@ function uams_primary_post_category(): string
 {
 
     // if ( function_exists('pricat_get_categories') ) { // if Primary Category is active.
-    $prim_category_name = get_post_meta(uams_news_post_id(), 'pricat_get_categories', true); // Primary category slug; '' when the post has none.
+    $prim_category_name = uams_news_text(get_post_meta(uams_news_post_id(), 'pricat_get_categories', true)); // Primary category slug; '' when the post has none.
     $term = null;
 
     // Only look the term up when the post has a primary category.
@@ -132,7 +132,7 @@ function get_uams_breadcrumbs(): string
     } elseif (is_author()) {
         $author = get_queried_object();
         $html .= '<li class="current"><span> Author: '.$author->display_name.'</span>'; // @phpstan-ignore property.nonObject (the queried object of an author archive is a WP_User)
-    } elseif (get_queried_object_id() !== 0 && get_queried_object_id() === (int) get_option('page_for_posts')) {
+    } elseif (get_queried_object_id() !== 0 && get_queried_object_id() === absint(uams_news_text(get_option('page_for_posts')))) {
         // Id zero is an unqueried view, and the setting is also zero when no posts page is set.
         $html .= '<li class="current"><span> '.get_the_title(get_queried_object_id()).' </span>';
     }
@@ -147,20 +147,20 @@ function get_uams_breadcrumbs(): string
         }
 
         if (is_category()) {
-            $category = get_category(get_query_var('cat'));
+            $category = get_category(absint(uams_news_text(get_query_var('cat'))));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
             $html .= '<li class="current"><span>'.get_cat_name($category->term_id).'</span>'; // @phpstan-ignore property.nonObject (the category query variable of a category archive names a category)
         }
 
         if (is_tax() && ! is_post_type_archive()) {
-            $term = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy'));
-            $tax = get_taxonomy(get_query_var('taxonomy'));
+            $term = get_term_by('slug', uams_news_text(get_query_var('term')), uams_news_text(get_query_var('taxonomy')));
+            $tax = get_taxonomy(uams_news_text(get_query_var('taxonomy')));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
             $html .= '<li class="current"><span>'.$tax->labels->name.': '.$term->name.'</span>'; // @phpstan-ignore property.nonObject, property.nonObject (a taxonomy archive has a taxonomy and a term)
         }
 
         if (is_tax() && is_post_type_archive()) {
-            $tax = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy'));
+            $tax = get_term_by('slug', uams_news_text(get_query_var('term')), uams_news_text(get_query_var('taxonomy')));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
             $html .= '<li class="current"><span>'.$tax->name.'</span>'; // @phpstan-ignore property.nonObject (a taxonomy archive has a term)
         }
@@ -318,16 +318,13 @@ function uams_news_meta_box_notice(): void
     );
 }
 
-/**
- * @return mixed
- */
-function get_uams_boilerplate()
+function get_uams_boilerplate(): string
 {
     if (! function_exists('rwmb_meta')) {
         return '';
     }
 
-    return rwmb_meta('boilerplate_html', ['object_type' => 'setting'], 'uamswp_news');
+    return uams_news_text(rwmb_meta('boilerplate_html', ['object_type' => 'setting'], 'uamswp_news'));
 }
 /**
  * @param  array<int, array<string, mixed>>  $settings_pages
@@ -565,7 +562,7 @@ function uamswp_register_api_hooks(): void
 }
 
 /**
- * @param  array<string, mixed>  $object
+ * @param  array{id: int, date: string, content: array{rendered: string}}  $object
  * @return string
  */
 function uamswp_return_full_content($object)
@@ -616,7 +613,7 @@ function uamswp_api_post_meta_keys(): array
 }
 
 /**
- * @param  array<string, mixed>  $object
+ * @param  array{id: int}  $object
  * @return mixed[]
  */
 function get_post_meta_for_api($object): array
@@ -645,7 +642,7 @@ function create_api_posts_category(): void
     ]);
 }
 /**
- * @param  array<string, mixed>  $object
+ * @param  array{id: int}  $object
  * @return WP_Term[]|false|WP_Error
  */
 function get_post_categories_for_api($object)
