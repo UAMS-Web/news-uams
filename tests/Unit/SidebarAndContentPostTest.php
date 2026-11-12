@@ -48,7 +48,11 @@ function sidebarContact(string $slug, string $people): string
         .' </div><!-- /.contact-widget-inner --></div>';
 }
 
-/** One person in a contact widget. The mailto link is the lowercase address unless the template spells it otherwise. */
+/**
+ * One person in a contact widget. The mailto link is the lowercase address unless the template spells it otherwise.
+ *
+ * @param  array<string, string>  $phones
+ */
 function sidebarPerson(string $name, array $phones, string $email, ?string $mailto = null): string
 {
     $html = '<h3 class="\'person-name\'">'.$name.'</h3>';
