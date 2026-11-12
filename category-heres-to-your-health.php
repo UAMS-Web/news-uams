@@ -1,8 +1,10 @@
-<?php global $post, $paged; ?>
+<?php /** @var WP_Post $post */ /** @var int $paged */ global $post, $paged; ?>
+<?php $do_not_duplicate = []; ?>
 <?php get_header(); ?>
 
 <?php
     $term_id = get_queried_object_id();
+/** @var list<array{full_url: string}> $images */
 $images = function_exists('rwmb_meta') ? rwmb_meta('cat_image', ['object_type' => 'term', 'size' => 'full'], $term_id) : [];
 $header_image = get_header_image();
 if ($images) {

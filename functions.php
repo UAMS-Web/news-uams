@@ -120,6 +120,7 @@ function uams_primary_post_category(): string
 function get_uams_breadcrumbs(): string
 {
 
+    /** @var WP_Post $post */
     global $post;
     $ancestors = array_reverse(get_post_ancestors($post->ID));
     $html = '<li><a href="http://www.uams.edu" title="University of Arkansas for Medical Scineces">Home</a></li>';
@@ -143,7 +144,7 @@ function get_uams_breadcrumbs(): string
         if (is_post_type_archive() && ! is_tax()) {
             $posttype = get_post_type_object(get_post_type()); // @phpstan-ignore argument.type (a post type archive has a post type)
             // $html .=  '<li class="current"><a href="'  . get_post_type_archive_link( $posttype->query_var ) .'" title="'. $posttype->labels->menu_name .'">'. $posttype->labels->menu_name  . '</a>';
-            $html .= '<li class="current"><span>'.$posttype->labels->menu_name.'</span>'; // @phpstan-ignore property.nonObject (a post type archive has a registered post type)
+            $html .= '<li class="current"><span>'.$posttype->labels->menu_name.'</span>'; // @phpstan-ignore property.nonObject, binaryOp.invalid (a post type archive has a registered post type)
         }
 
         if (is_category()) {
@@ -156,7 +157,7 @@ function get_uams_breadcrumbs(): string
             $term = get_term_by('slug', uams_news_text(get_query_var('term')), uams_news_text(get_query_var('taxonomy')));
             $tax = get_taxonomy(uams_news_text(get_query_var('taxonomy')));
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
-            $html .= '<li class="current"><span>'.$tax->labels->name.': '.$term->name.'</span>'; // @phpstan-ignore property.nonObject, property.nonObject (a taxonomy archive has a taxonomy and a term)
+            $html .= '<li class="current"><span>'.$tax->labels->name.': '.$term->name.'</span>'; // @phpstan-ignore property.nonObject, property.nonObject, binaryOp.invalid (a taxonomy archive has a taxonomy and a term)
         }
 
         if (is_tax() && is_post_type_archive()) {
@@ -173,9 +174,9 @@ function get_uams_breadcrumbs(): string
                 $posttype = get_post_type_object(get_post_type()); // @phpstan-ignore argument.type (a single custom post has a post type)
                 $archive_link = get_post_type_archive_link($posttype->query_var); // @phpstan-ignore argument.type, property.nonObject (a custom post type is registered and has a query variable name)
                 if (! empty($archive_link)) {
-                    $html .= '<li><a href="'.$archive_link.'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>'; // @phpstan-ignore property.nonObject, property.nonObject (a custom post type is registered)
+                    $html .= '<li><a href="'.$archive_link.'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>'; // @phpstan-ignore property.nonObject, property.nonObject, binaryOp.invalid, binaryOp.invalid (a custom post type is registered)
                 } elseif (! empty($posttype->rewrite['slug'])) {
-                    $html .= '<li><a href="'.site_url('/'.$posttype->rewrite['slug'].'/').'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>';
+                    $html .= '<li><a href="'.site_url('/'.$posttype->rewrite['slug'].'/').'" title="'.$posttype->labels->menu_name.'">'.$posttype->labels->menu_name.'</a>'; // @phpstan-ignore binaryOp.invalid, binaryOp.invalid, binaryOp.invalid (a custom post type is registered)
                 }
             }
             $html .= '<li class="current"><span>'.wp_trim_words(get_the_title($post->ID), 5, '...').'</span>';
@@ -391,6 +392,7 @@ function exclude_id_list(): array
     if (! function_exists('rwmb_meta')) {
         return $value;
     }
+    /** @var list<object{term_id: int}>|WP_Error|'' $terms */
     $terms = rwmb_meta('exclude_cat', ['object_type' => 'setting'], 'uamswp_news');
     if (! empty($terms) && ! is_wp_error($terms)) {
         foreach ($terms as $term) {

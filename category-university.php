@@ -1,4 +1,4 @@
-<?php global $post, $paged; ?>
+<?php /** @var WP_Post $post */ global $post, $paged; ?>
 <?php get_header(); ?>
 
 <?php // get_template_part( 'header', 'image' );?>
