@@ -159,15 +159,12 @@ function get_uams_breadcrumbs(): string
 
         if (is_tax() && is_post_type_archive()) {
             $tax = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy'));
-            $posttype = get_post_type_object(get_post_type());
             // $html .=  '<li class="current"><a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
             $html .= '<li class="current"><span>'.$tax->name.'</span>';
         }
 
         if (is_single()) {
             if (has_category()) {
-                $thecat = get_the_category($post->ID);
-                $category = array_shift($thecat);
                 $html .= '<li>'.uams_primary_post_category(); // <a href="'  . get_category_link( $category->term_id ) .'" title="'. get_cat_name( $category->term_id ).'">'. get_cat_name($category->term_id ) . '</a>';
             }
             if (uams_is_custom_post_type()) {
@@ -598,7 +595,6 @@ function uamswp_before_after($content)
 {
     if (is_single() && is_main_query()) {
         $beforecontent = '<span class="entrydate"><time datetime="'.get_the_date('c').'" itemprop="datePublished">'.ap_date(get_the_date()).'</time><span> | ';
-        $aftercontent = '';
         $first_para_pos = strpos($content, '<p>');
 
         return substr_replace($content, $beforecontent, $first_para_pos + 3, 0);
