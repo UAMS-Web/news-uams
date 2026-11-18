@@ -1,6 +1,6 @@
 # Troubleshooting
 
-<!-- cspell:ignore multisite -->
+<!-- cspell:ignore fullcontent multisite -->
 
 Written against v1.4.1.
 
@@ -27,21 +27,21 @@ An administrator sees `The Olympian needs these plugins to work:` at the top of 
 
 ## A story does not appear in a landing page's top slot
 
-**Cause:** the top slot of each landing page queries posts in *Featured* and the page's category together. A post in only one of them is not picked.
+**Cause:** the top slot of the Education Research Feature, Health, Patient Stories and University pages queries posts in *Featured* and the page's category together. A post in only one of them is not picked. *Here's to Your Health* and *News Release* have no visible top slot.
 
-**Fix:** tick both. For *Here's to Your Health*, tick *Featured* and *Health*; see [Category landing pages](Category-landing-pages.md#getting-a-story-into-the-featured-slot).
+**Fix:** tick both; see [Category landing pages](Category-landing-pages.md#getting-a-story-into-the-featured-slot).
 
 ## The home page shows the wrong stories in a section
 
-**Cause:** the *Spotlight* section, and the exclusions on *More news* and *Announcements*, name categories by numeric id in `front-page.php`. Those ids are only right on the database they were written for, for example after a site is rebuilt or imported.
+**Cause:** the *University News* section, the exclusions on *More Stories* and *Announcements*, and the events shortcode's category name categories by numeric id in `front-page.php`, and the breadcrumb and card labels skip term id `13` as *Featured* (`functions.php`). Those ids are only right on the database they were written for, and go wrong after a site is rebuilt or imported.
 
 **Fix:** find the intended categories' ids under *Posts*, *Categories* (the `tag_ID` in each edit link) and change them in `front-page.php` through a pull request. For a category that should simply stay off the home page, use *Exclude Categories* on [News Settings](News-Settings.md) instead, which needs no code change.
 
 ## The boilerplate is missing or outdated on a post
 
-**Cause:** either the post does not have *Include Boilerplate* ticked, or it is rendered by `content-post.php`, which prints its own fixed paragraph and ignores the setting.
+**Cause:** the post does not have *Include Boilerplate* ticked, or the *Boilerplate* field on News Settings is empty or out of date.
 
-**Fix:** tick *Include Boilerplate*. If the text shown is the fixed paragraph, it changes only in `content-post.php`; see [Templates](Templates.md#content-postphp).
+**Fix:** tick *Include Boilerplate* on the post, and check the text on [News Settings](News-Settings.md). A consumer of the `fullcontent` REST field picks up the change on its next read.
 
 ## A new image size is blank on older posts
 

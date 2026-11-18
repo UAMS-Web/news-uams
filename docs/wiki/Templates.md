@@ -8,7 +8,7 @@ The theme overrides a handful of the parent theme's templates. Anything not list
 
 ## `front-page.php`
 
-The site's home page: the *Featured*, *Spotlight*, *More news*, *Announcements* and *College events* sections. Each later section leaves out posts an earlier one showed. The queries are listed in [Category landing pages](Category-landing-pages.md#the-home-page).
+The site's home page: the *Featured*, *University News*, *More Stories*, *Announcements* and *Academic & Continuing Education Events* sections. The sections and their queries are listed in [Category landing pages](Category-landing-pages.md#the-home-page).
 
 ## `category-<slug>.php`
 
@@ -16,14 +16,14 @@ One file per landing page: `education-research-feature`, `health`, `heres-to-you
 
 ## `content.php`
 
-The body of a post or page.
+The body of a post or page. The parent theme has no `single.php`, so a single post goes through its `index.php`, which loads `content.php` for a standard post.
 
 - On a single post: the featured image with its caption and media credit, the title, the byline when the `show_byline_on_posts` option is set (through Co-Authors Plus when it is active), the content, and the boilerplate from [News Settings](News-Settings.md) when *Include Boilerplate* is ticked.
-- On an archive or the blog page: a 130 by 130 thumbnail and the excerpt.
+- On the blog page: a 130 by 130 thumbnail and the excerpt. Other archives use the parent theme's templates; its `archive.php` loads `content-archive.php`, not this file.
 
 ## `content-post.php`
 
-The body of a post where the parent theme asks for the post variant: the title, the mobile sidebar menu (its button shows the title cut to 27 characters at a space), the content, and, when *Include Boilerplate* is ticked, a fixed boilerplate paragraph written into the template rather than the setting.
+Kept in the theme, but nothing loads it: `post` is not a post format, so the parent theme never asks for this file. It holds the title, a mobile sidebar menu (its button shows the title cut to 27 characters at a space), the content, and, when *Include Boilerplate* is ticked, a fixed boilerplate paragraph written into the template rather than the setting.
 
 ## `sidebar.php`
 

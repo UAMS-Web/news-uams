@@ -18,13 +18,13 @@ Every field below is registered on the `rwmb_meta_boxes` filter in `functions.ph
 
 | Field | Meta key | Type | Effect |
 | --- | --- | --- | --- |
-| Featured Image | `cat_image` | Image | The header image on the *Here's to Your Health* landing page. Needs MB Term Meta. |
+| Featured Image | `cat_image` | Image (multiple) | The header images on the *Here's to Your Health* landing page, one per image; with none set the page uses the site's header image. Needs MB Term Meta. |
 
 ## Meta the theme reads but does not register
 
 | Meta key | Where it comes from | Read by |
 | --- | --- | --- |
-| `pricat_get_categories` | A primary-category plugin | The breadcrumb, which links the primary category when one is set |
+| `pricat_get_categories` | A primary-category plugin | The breadcrumb and the category label on home page cards, which link the primary category when one is set |
 | `show_image_single` | Another plugin or an import | `content.php` compares it with `false`, which a single-value read inside the loop never returns, so in practice the featured image shows on every single post that has one |
 | `_media_credit` | A media credit plugin, on the attachment | `content.php`, as `Image by <credit>` under the featured image |
 

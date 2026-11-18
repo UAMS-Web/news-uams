@@ -1,6 +1,6 @@
 # Development
 
-<!-- cspell:ignore phpunit uams -->
+<!-- cspell:ignore phpstan phpunit uams -->
 
 Written against v1.4.1.
 
@@ -28,7 +28,7 @@ PHP 8.4 is the development version (`config.platform.php`); the theme supports 8
 
 The same checks run in CI on every pull request, from the shared job chain in `UAMS-Web/uams-ci-workflows`, plus a lint of every shipped file under PHP 8.2. The `CI` check must pass before a pull request can merge.
 
-**Note:** a new first-party PHP file at the theme root is added in three places in the same change: the `mutate-paths` input in `.github/workflows/ci.yml`, the `--path` list of the `mutate` script in `composer.json`, and the `<source>` list in `phpunit.xml`. A file the theme runs also needs a `-export-ignore` line in `.gitattributes`, or the download leaves it out.
+**Note:** a new first-party PHP file at the theme root is added in five places in the same change: the `mutate-paths` input in `.github/workflows/ci.yml`, the `--path` list of the `mutate` script in `composer.json`, the `<source>` list in `phpunit.xml`, the `paths` in `phpstan.neon.dist`, and `withPaths` in `rector.php`. A file the theme runs also needs a `-export-ignore` line in `.gitattributes`, or the download leaves it out.
 
 ## Making a change
 

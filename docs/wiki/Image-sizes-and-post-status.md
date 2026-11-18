@@ -20,4 +20,4 @@ Registered with `add_image_size()`, all hard-cropped. WordPress makes each size 
 
 ## The To Convert post status
 
-The theme registers a `convert` status for posts and pages, shown as *To Convert* in the post lists and as *To Be Converted* in the status dropdown. It is not public, so a post in it is never shown on the site, and it is left out of the *All* count. The dropdown labels, the dashicon and the `show_in_*_dropdown` flags are arguments the WP Statuses plugin reads; WordPress itself ignores them.
+The theme registers a `convert` status, shown as *To Convert* in the post lists. It is not public, so a post in it is never shown on the site, and it is left out of the *All* count. The `post_type` limit (posts and pages), the *To Be Converted* dropdown label, the dashicon and the `show_in_*_dropdown` flags are arguments the WP Statuses plugin reads; WordPress itself ignores them, so they take effect only where that plugin is active.

@@ -8,7 +8,7 @@ Written against v1.4.1.
 
 | Field | Field id | Type | Default | Effect |
 | --- | --- | --- | --- | --- |
-| Exclude Categories | `exclude_cat` | Category checkbox tree | none | Posts in these categories are left out of the home page's *More news*, *Announcements* and *College events* sections. |
+| Exclude Categories | `exclude_cat` | Category checkbox tree | none | Posts in these categories are left out of the home page's *More Stories* and *Announcements* sections. |
 | Boilerplate | `boilerplate_html` | Rich text, saved raw | empty | Printed after a post's content when the post has *Include Boilerplate* ticked, and added to the `fullcontent` REST field. |
 
 ## Example
@@ -20,4 +20,4 @@ To keep internal stories off the home page, create a category such as `Inside UA
 - `exclude_id_list()` returns the term ids ticked under *Exclude Categories*, or an empty list when Meta Box is not active.
 - `get_uams_boilerplate()` returns the boilerplate HTML, or an empty string when Meta Box is not active.
 
-**Note:** `content-post.php` prints a fixed boilerplate paragraph of its own rather than this setting. Changing the setting does not change what that template shows; see [Templates](Templates.md#content-postphp).
+**Note:** `content-post.php` also holds a fixed boilerplate paragraph of its own, but nothing loads that template, so the setting is what a single post shows; see [Templates](Templates.md#content-postphp).

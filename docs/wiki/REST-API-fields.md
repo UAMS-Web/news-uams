@@ -8,8 +8,8 @@ The theme adds three fields to every post in the core posts endpoint, `/wp-json/
 
 | Field | Type | Contents |
 | --- | --- | --- |
-| `fullcontent` | string | The rendered content, with the AP-style date inserted at the start of the first paragraph, and the boilerplate from [News Settings](News-Settings.md) appended when the post has *Include Boilerplate* ticked |
-| `post-meta-fields` | object | The post's values for an allowlist of meta keys, each as an array of values; a key with no value is left out |
+| `fullcontent` | string | The rendered content, with the AP-style date inserted at the start of the first paragraph (content with no `<p>` gets it at character 3), and the boilerplate from [News Settings](News-Settings.md) appended when the post has *Include Boilerplate* ticked |
+| `post-meta-fields` | object, or `[]` | The post's values for an allowlist of meta keys, each as an array of values; a key with no value is left out, and a post with none of them gets an empty array |
 | `post_categories` | array | The post's category terms, as `get_the_terms()` returns them |
 
 ## The meta allowlist
