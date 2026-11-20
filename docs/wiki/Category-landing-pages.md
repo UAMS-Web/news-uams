@@ -1,6 +1,6 @@
 # Category landing pages
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 Six categories have a template of their own, chosen by WordPress from the file name `category-<slug>.php`. Every other category uses the parent theme's archive. A post appears on a landing page through its categories alone, so placing a story is a matter of ticking the right ones.
 

@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore fullcontent pricat -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 A news post is an ordinary WordPress post with a *Newsroom Features* box under the editor. This guide covers the fields in that box and what each one changes on the published post.
 

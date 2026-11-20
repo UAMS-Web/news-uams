@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore fullcontent multisite -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 - [The plugin notice will not go away](#the-plugin-notice-will-not-go-away)
 - [There is no News Settings menu](#there-is-no-news-settings-menu)

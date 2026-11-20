@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore dashicon uams -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 ## Image sizes
 

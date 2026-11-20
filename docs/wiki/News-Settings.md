@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore fullcontent UAMS uamswp -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 *News Settings* is an admin page the theme adds through MB Settings Page. It holds site-wide values the templates read. Its values are stored in the `uamswp_news` option.
 

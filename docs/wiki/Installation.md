@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore uams -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 At the end of this page the theme is active on a WordPress site, with every plugin it reads from in place and no warning on the dashboard.
 
@@ -10,7 +10,7 @@ At the end of this page the theme is active on a WordPress site, with every plug
 
 | Requirement | Version or source | Why |
 | --- | --- | --- |
-| WordPress | 6.8 or later (`Requires at least` in `style.css` on `master`, added after v1.4.1) | The code is analyzed by PHPStan against the WordPress 6.8 stubs. |
+| WordPress | 6.8 or later (`Requires at least` in `style.css` since v1.4.2) | The code is analyzed by PHPStan against the WordPress 6.8 stubs. |
 | PHP | 8.2 or later (`Requires PHP` in `style.css`) | Every shipped PHP file is linted under 8.2 in CI. |
 | Parent theme | `uams-2016` (`Template` in `style.css`) | The header, footer, menus and sidebar functions come from the parent. |
 | Meta Box | [wordpress.org/plugins/meta-box](https://wordpress.org/plugins/meta-box/) | Every custom field and the settings page are Meta Box fields. |
