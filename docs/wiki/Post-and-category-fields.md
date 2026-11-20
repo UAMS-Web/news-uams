@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore pricat rwmb -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 Every field below is registered on the `rwmb_meta_boxes` filter in `functions.php` and stored as post or term meta under its field id. Field ids are meta keys, so a field renamed in code loses the values already saved under the old id.
 

@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore uams -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 This wiki documents The Olympian, the child theme for the UAMS News site. It extends the `uams-2016` parent theme with the newsroom home page, the category landing pages, the fields an editor fills in on a news post, and the REST fields other sites read. The repository keeps the code, its tests and the contributing guide; these pages hold everything long-form.
 

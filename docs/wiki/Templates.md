@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore thinstrip uams -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 The theme overrides a handful of the parent theme's templates. Anything not listed here comes from `uams-2016`.
 

@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore phpstan phpunit uams -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 The theme ships no Composer dependencies. `composer.json` exists only for the development tools: Pest with Brain Monkey for the tests, and Pint, Rector and PHPStan for the code checks.
 

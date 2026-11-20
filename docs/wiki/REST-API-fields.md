@@ -2,7 +2,7 @@
 
 <!-- cspell:ignore entrydate fullcontent uamswp -->
 
-Written against v1.4.1.
+Written against v1.4.2.
 
 The theme adds three fields to every post in the core posts endpoint, `/wp-json/wp/v2/posts`. Other sites read them to syndicate news. The endpoint answers anonymous requests, so everything in these fields is public.
 
